@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,6 +7,7 @@ using System.IO;
 namespace TranslatorWritter {
     public class Packer {        
         const char delimiter='§';
+        const string newLine="\n";
 
         public event EventHandler<SampleEventArgs> ProgressChange;
 
@@ -65,6 +67,7 @@ namespace TranslatorWritter {
                 }
             }
 
+
             string OptimizeFile(string filePath) { 
                 string[] lines = File.ReadAllLines(filePath);
                 List<string> newLines=new List<string>();
@@ -100,8 +103,11 @@ namespace TranslatorWritter {
 
                     if (line.StartsWith("t")) {newLines.Add(line); continue;}
                     if (line.StartsWith("c")) {newLines.Add(line); continue;}
+                    if (line.StartsWith("b")) {newLines.Add(line); continue;}//cite
                     if (line.StartsWith("o")) {newLines.Add(line); continue;}
                     if (line.StartsWith("q")) {newLines.Add(line); continue;}
+                    if (line.StartsWith("u")) {newLines.Add(line); continue;}
+                    if (line.StartsWith("r")) {newLines.Add(line); continue;}
                     if (line.StartsWith("g")){
                         if (line.Length>3 && line.Contains(',')){
                             string[]pos=line.Substring(1).Split(',');
@@ -256,8 +262,12 @@ namespace TranslatorWritter {
                     if (line == "") continue;
                     ItemPatternNoun s = ItemPatternNoun.Load(line);
                     if (s==null) continue;
-                    listPatternFromNoun.Add(s);                    
-                    if (!s.IsEmpty()) newLines.Add(s.SavePacker());
+                    if (!s.IsEmpty()) listPatternFromNoun.Add(s);                    
+                    //newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsNounFrom = Methods.OptimizeNamesToPacker(listPatternFromNoun.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternNounFrom in pairsNounFrom) { 
+                    newLines.Add(((ItemPatternNoun)patternNounFrom.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -268,8 +278,12 @@ namespace TranslatorWritter {
                     if (line == "") continue;
                     ItemPatternNoun s = ItemPatternNoun.Load(line);
                     if (s==null) continue;
-                    listPatternToNoun.Add(s);
-                    if (!s.IsEmpty()) newLines.Add(s.SavePacker());
+                    
+                    if (!s.IsEmpty()) listPatternToNoun.Add(s);//newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsNounTo = Methods.OptimizeNamesToPacker(listPatternToNoun.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternNounTo in pairsNounTo) { 
+                    newLines.Add(((ItemPatternNoun)patternNounTo.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -280,10 +294,11 @@ namespace TranslatorWritter {
                     if (line == "") continue;
                     ItemNoun s = ItemNoun.Load(line);
                     if (s==null) continue;
-                   // if (s.From=="") continue;
+                    if (s.From=="") continue;
                    // char[] notAllowed=new char[]{'?', ' ', ';', '_', '|', '-', '\t'};
                   //  if (Methods.ContainsBody(s.To, notAllowed)) continue;
 
+                    /* backup
                     bool pf=false;
                     foreach (ItemPatternNoun f in listPatternFromNoun) { 
                         if (f.Name == s.PatternFrom) { 
@@ -302,7 +317,36 @@ namespace TranslatorWritter {
                             }
                         }
                         if (pt) break;
-                    }
+                    }*/
+
+                    // convert names simplify (string name to "id")
+                    // From
+                    bool pf=false;
+                    ItemPatternNoun f = (ItemPatternNoun)Methods.GetOptimizedNameForPacker(pairsNounFrom, s.PatternFrom);
+                    if (f!=null) { 
+                        pf=true;
+                        s.PatternFrom=f.Name;
+                    }                    
+                    if (!pf) continue;
+
+                    // To
+                    bool pt = false;
+                    for (int to_i=0; to_i<s.To.Count; to_i++) {
+                        var to = s.To[to_i];
+                        bool existsInside=false;
+                        foreach ((string, ItemTranslatingPattern) patternPair in pairsNounTo) { 
+                            if (to.Pattern==patternPair.Item1) { 
+                                to.Pattern=patternPair.Item2.Name;
+                                existsInside=true;
+                                pt=true;
+                                break;
+                            }
+                        }
+                        if (!existsInside) { 
+                            s.To.Remove(to);
+                            to_i--;
+                        }
+                    }                    
                     if (!pt) continue;
 
                     newLines.Add(s.SavePacker());
@@ -318,9 +362,12 @@ namespace TranslatorWritter {
                     if (line == "") continue;
                     ItemPatternAdjective s = ItemPatternAdjective.Load(line);
                     if (s==null) continue;
-                    listPatternFromAdjective.Add(s);
-
-                    if (!s.IsEmpty()) newLines.Add(s.SavePacker());
+                   
+                    if (!s.IsEmpty())  listPatternFromAdjective.Add(s);//newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsAdjectiveFrom = Methods.OptimizeNamesToPacker(listPatternFromAdjective.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternAdjectiveFrom in pairsAdjectiveFrom) { 
+                    newLines.Add(((ItemPatternAdjective)patternAdjectiveFrom.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -330,10 +377,13 @@ namespace TranslatorWritter {
                     if (line == "-") break;
                     if (line == "") continue;
                     ItemPatternAdjective s = ItemPatternAdjective.Load(line);
-                    if (s==null) continue;
-                    listPatternToAdjective.Add(s);
+                    if (s==null) continue;                    
 
-                    if (!s.IsEmpty()) newLines.Add(s.SavePacker());
+                    if (!s.IsEmpty()) listPatternToAdjective.Add(s);//newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsAdjectiveTo = Methods.OptimizeNamesToPacker(listPatternToAdjective.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternAdjectiveTo in pairsAdjectiveTo) { 
+                    newLines.Add(((ItemPatternAdjective)patternAdjectiveTo.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -348,7 +398,7 @@ namespace TranslatorWritter {
                   //  char[] notAllowed=new char[]{'?', ' ', ';', '_', '|', '-', '\t'};
                   //  if (Methods.ContainsBody(s.To, notAllowed)) continue;
 
-                    bool pf=false;
+                    /*bool pf=false;
                     foreach (ItemPatternAdjective f in listPatternFromAdjective) { 
                         if (f.Name == s.PatternFrom) { 
                             pf=true;
@@ -367,6 +417,36 @@ namespace TranslatorWritter {
                         }
                         if (pt) break;
                     }
+                    if (!pt) continue;*/
+
+                    // convert names simplify (string name to "id")
+                    // From
+                    bool pf=false;
+                    ItemPatternAdjective f = (ItemPatternAdjective)Methods.GetOptimizedNameForPacker(pairsAdjectiveFrom, s.PatternFrom);
+                    if (f!=null) { 
+                        pf=true;
+                        s.PatternFrom=f.Name;
+                    }                    
+                    if (!pf) continue;
+
+                    // To
+                    bool pt = false;
+                    for (int to_i=0; to_i<s.To.Count; to_i++) {
+                        var to = s.To[to_i];
+                        bool existsInside=false;
+                        foreach ((string, ItemTranslatingPattern) patternPair in pairsAdjectiveTo) { 
+                            if (to.Pattern==patternPair.Item1) { 
+                                to.Pattern=patternPair.Item2.Name;
+                                existsInside=true;
+                                pt=true;
+                                break;
+                            }
+                        }
+                        if (!existsInside) { 
+                            s.To.Remove(to);
+                            to_i--;
+                        }
+                    }                    
                     if (!pt) continue;
 
                     newLines.Add(s.SavePacker());
@@ -382,8 +462,12 @@ namespace TranslatorWritter {
                     if (line == "") continue;
                     ItemPatternPronoun s = ItemPatternPronoun.Load(line);
                     if (s==null) continue;
-                    listPatternFromPronoun.Add(s);
-                   if (!s.IsEmpty()) newLines.Add(s.SavePacker());
+                    
+                    if (!s.IsEmpty()) listPatternFromPronoun.Add(s);//newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsPronounFrom = Methods.OptimizeNamesToPacker(listPatternFromPronoun.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternPronounFrom in pairsPronounFrom) { 
+                    newLines.Add(((ItemPatternPronoun)patternPronounFrom.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -394,8 +478,12 @@ namespace TranslatorWritter {
                     if (line == "") continue;
                     ItemPatternPronoun s = ItemPatternPronoun.Load(line);
                     if (s==null) continue;
-                    listPatternToPronoun.Add(s);
-                    if (!s.IsEmpty()) newLines.Add(s.SavePacker());
+                    
+                    if (!s.IsEmpty()) listPatternToPronoun.Add(s);//newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsPronounTo = Methods.OptimizeNamesToPacker(listPatternToPronoun.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternPronounTo in pairsPronounTo) { 
+                    newLines.Add(((ItemPatternPronoun)patternPronounTo.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -409,7 +497,7 @@ namespace TranslatorWritter {
                   //  char[] notAllowed=new char[]{'?', ' ', ';', '_', '|', '-', '\t'};
                   //  if (Methods.ContainsBody(s.To, notAllowed)) continue;
 
-                    bool pf=false;
+                    /*bool pf=false;
                     foreach (ItemPatternPronoun f in listPatternFromPronoun) { 
                         if (f.Name == s.PatternFrom) { 
                             pf=true;
@@ -428,7 +516,36 @@ namespace TranslatorWritter {
                         }
                         if (pt) break;
                     }
-                    if (!pt) continue;/**/
+                    if (!pt) continue;*/
+                    // convert names simplify (string name to "id")
+                    // From
+                    bool pf=false;
+                    ItemPatternPronoun f = (ItemPatternPronoun)Methods.GetOptimizedNameForPacker(pairsPronounFrom, s.PatternFrom);
+                    if (f!=null) { 
+                        pf=true;
+                        s.PatternFrom=f.Name;
+                    }                    
+                    if (!pf) continue;
+
+                    // To
+                    bool pt = false;
+                    for (int to_i=0; to_i<s.To.Count; to_i++) {
+                        var to = s.To[to_i];
+                        bool existsInside=false;
+                        foreach ((string, ItemTranslatingPattern) patternPair in pairsPronounTo) { 
+                            if (to.Pattern==patternPair.Item1) { 
+                                to.Pattern=patternPair.Item2.Name;
+                                existsInside=true;
+                                pt=true;
+                                break;
+                            }
+                        }
+                        if (!existsInside) { 
+                            s.To.Remove(to);
+                            to_i--;
+                        }
+                    }
+                    if (!pt) continue;
 
                     newLines.Add(s.SavePacker());
                 }
@@ -443,10 +560,14 @@ namespace TranslatorWritter {
                     if (line == "")  continue;
                     ItemPatternNumber s = ItemPatternNumber.Load(line);
                     if (s==null) continue;
-                    listPatternFromNumber.Add(s);
+                    
 
-                    if (!s.IsEmpty()) 
-                        newLines.Add(s.SavePacker());
+                    if (!s.IsEmpty()) listPatternFromNumber.Add(s);
+                       // newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsNumberFrom = Methods.OptimizeNamesToPacker(listPatternFromNumber.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternNumberFrom in pairsNumberFrom) { 
+                    newLines.Add(((ItemPatternNumber)patternNumberFrom.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -457,9 +578,12 @@ namespace TranslatorWritter {
                     if (line == "") continue;
                     ItemPatternNumber s = ItemPatternNumber.Load(line);
                     if (s==null) continue;
-                    listPatternToNumber.Add(s);
-
-                    if (!s.IsEmpty()) newLines.Add(s.SavePacker());
+                    
+                    if (!s.IsEmpty()) listPatternToNumber.Add(s);//newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsNumberTo = Methods.OptimizeNamesToPacker(listPatternToNumber.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternNumberTo in pairsNumberTo) { 
+                    newLines.Add(((ItemPatternNumber)patternNumberTo.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -474,7 +598,7 @@ namespace TranslatorWritter {
                   //  char[] notAllowed=new char[]{'?', ' ', ';', '_', '|', '-', '\t'};
                   //  if (Methods.ContainsBody(s.To, notAllowed)) continue;
 
-                    bool pf=false;
+                    /*bool pf=false;
                     foreach (ItemPatternNumber f in listPatternFromNumber) { 
                         if (f.Name == s.PatternFrom) { 
                             pf=true;
@@ -491,6 +615,35 @@ namespace TranslatorWritter {
                             }
                         }
                         if (pt) break;
+                    }
+                    if (!pt) continue;*/
+                    // convert names simplify (string name to "id")
+                    // From
+                    bool pf=false;
+                    ItemPatternNumber f = (ItemPatternNumber)Methods.GetOptimizedNameForPacker(pairsNumberFrom, s.PatternFrom);
+                    if (f!=null) { 
+                        pf=true;
+                        s.PatternFrom=f.Name;
+                    }                    
+                    if (!pf) continue;
+
+                    // To
+                    bool pt = false;
+                    for (int to_i=0; to_i<s.To.Count; to_i++) {
+                        var to = s.To[to_i];
+                        bool existsInside=false;
+                        foreach ((string, ItemTranslatingPattern) patternPair in pairsNumberTo) { 
+                            if (to.Pattern==patternPair.Item1) { 
+                                to.Pattern=patternPair.Item2.Name;
+                                existsInside=true;
+                                pt=true;
+                                break;
+                            }
+                        }
+                        if (!existsInside) { 
+                            s.To.Remove(to);
+                            to_i--;
+                        }
                     }
                     if (!pt) continue;
 
@@ -509,9 +662,12 @@ namespace TranslatorWritter {
                     if (s==null) continue;
                     if (s.Name=="") continue; 
                   //  s.Infinitive=Methods.SavePackerStringMultiple()
-                    listPatternFromVerb.Add(s);                
-
-                    if (!s.IsEmpty()) newLines.Add(s.SavePacker());
+                  
+                    if (!s.IsEmpty()) listPatternFromVerb.Add(s);  //newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsVerbFrom = Methods.OptimizeNamesToPacker(listPatternFromVerb.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternVerbFrom in pairsVerbFrom) { 
+                    newLines.Add(((ItemPatternVerb)patternVerbFrom.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -523,9 +679,12 @@ namespace TranslatorWritter {
                     ItemPatternVerb s = ItemPatternVerb.Load(line);
                     if (s==null) continue;
                     if (s.Name=="") continue; 
-                    listPatternToVerb.Add(s/*ItemPatternVerb.Load(line)*/);
-
-                   if (!s.IsEmpty()) newLines.Add(s.SavePacker());
+                    
+                    if (!s.IsEmpty()) listPatternToVerb.Add(s/*ItemPatternVerb.Load(line)*/);//newLines.Add(s.SavePacker());
+                }
+                List<(string, ItemTranslatingPattern)> pairsVerbTo = Methods.OptimizeNamesToPacker(listPatternToVerb.ConvertAll(p => p as ItemTranslatingPattern));
+                foreach ((string, ItemTranslatingPattern) patternVerbTo in pairsVerbTo) { 
+                    newLines.Add(((ItemPatternVerb)patternVerbTo.Item2).SavePacker());
                 }
                 newLines.Add("-");
 
@@ -541,7 +700,7 @@ namespace TranslatorWritter {
                     if (s.From.Contains(notAllowed)) continue;
                     // if (Methods.ContainsBody(s.To, notAllowed)) continue;
 
-                    bool pf = false;
+                    /*bool pf = false;
                     foreach (ItemPatternVerb f in listPatternFromVerb) {
                         if (f.Name == s.PatternFrom) {
                             pf = true;
@@ -559,6 +718,35 @@ namespace TranslatorWritter {
                             }
                         }
                         if (pt) break;
+                    }
+                    if (!pt) continue;*/
+                    // convert names simplify (string name to "id")
+                    // From
+                    bool pf=false;
+                    ItemPatternVerb f = (ItemPatternVerb)Methods.GetOptimizedNameForPacker(pairsVerbFrom, s.PatternFrom);
+                    if (f!=null) { 
+                        pf=true;
+                        s.PatternFrom=f.Name;
+                    }                    
+                    if (!pf) continue;
+
+                    // To
+                    bool pt = false;
+                    for (int to_i=0; to_i<s.To.Count; to_i++) {
+                        var to = s.To[to_i];
+                        bool existsInside=false;
+                        foreach ((string, ItemTranslatingPattern) patternPair in pairsVerbTo) { 
+                            if (to.Pattern==patternPair.Item1) { 
+                                to.Pattern=patternPair.Item2.Name;
+                                existsInside=true;
+                                pt=true;
+                                break;
+                            }
+                        }
+                        if (!existsInside) { 
+                            s.To.Remove(to);
+                            to_i--;
+                        }
                     }
                     if (!pt) continue;
 
@@ -659,7 +847,7 @@ namespace TranslatorWritter {
                 FormMain.LoadedSaveVersion = _LoadedSaveVersion;
                 FormMain.LoadedVersionNumber = _LoadedVersionNumber;
 
-                return String.Join(Environment.NewLine, newLines);
+                return String.Join(newLine, newLines);
             }
         } 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -31,7 +32,7 @@ namespace TranslatorWritter {
         public virtual string SavePacker() {
             string data=From+"|"+PatternFrom;
             foreach (TranslatingToDataWithPattern to in To) {
-                if (!to.Body.Contains('?'))data+="|"+to.Save();
+                if (!to.Body.Contains('?')) data+="|"+to.Save();
             }
             if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
             return data;
@@ -383,6 +384,7 @@ namespace TranslatorWritter {
             foreach (TranslatingToData to in To) {
                 if (to!=null) if (to.Valid(notAllowed)) return true;
             }            
+            if (To.Count==0) return false;
 
             return true;
         }
@@ -408,6 +410,8 @@ namespace TranslatorWritter {
         public virtual string Save() {
             string data=From+"|"+ (Show ? "1" : "0");
             foreach (TranslatingToData to in To) data+="|"+to.Save();
+            //if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+
             return data;
         }
         public virtual string SavePacker() {
@@ -668,7 +672,9 @@ namespace TranslatorWritter {
 
             foreach (TranslatingToData to in To) {
                 if (to!=null) if (to.Valid(notAllowed)) return true;
-            }            
+            }        
+            
+            if (To.Count==0) return false;
 
             return true;
         }
@@ -689,7 +695,7 @@ namespace TranslatorWritter {
                     };
                 }
                 throw new Exception("SentencePattern - chybná délka");
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 string[] raw = data.Split('|');
                 ItemSentence item = new ItemSentence {
                     From = raw[0],
@@ -697,8 +703,7 @@ namespace TranslatorWritter {
                 };
                 item.To=Methods.LoadListTranslatingToData(2, raw);
                 return item;
-            }
-            throw new Exception("unknown version");
+            }else throw new Exception("unknown version");
         }
     }
 
@@ -709,15 +714,17 @@ namespace TranslatorWritter {
             To=new List<TranslatingToData>();
         }
                 
-       // static readonly char[] notAllowedP=new char[]{'|', '\t', ';', '_', '/', '"'};
+        static readonly char[] notAllowedP=new char[]{'|', '\t', ';', '_', '/', '"'};
 
         public override bool Valid() {
             if (To==null) return false;
-            if (From.Contains(notAllowed)) return false;
+            if (From.Contains(notAllowedP)) return false;
+
+            if (To.Count==0) return false;
 
             foreach (TranslatingToData to in To) {
-                if (to!=null) if (to.Valid(notAllowed)) return true;
-            }            
+                if (to!=null) if (to.Valid(notAllowedP)) return true;
+            }
 
             return true;
         }
@@ -737,7 +744,7 @@ namespace TranslatorWritter {
                     };
                 }
                 throw new Exception("SentencePattern - chybná délka");
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 string[] raw = data.Split('|');
                 ItemSentencePart item = new ItemSentencePart {
                     From = raw[0],
@@ -855,6 +862,8 @@ namespace TranslatorWritter {
                 if (to!=null) if (to.Valid(notAllowed)) return true;
             }            
 
+            if (To.Count==0) return false;
+
             return true;
         }
 
@@ -881,7 +890,7 @@ namespace TranslatorWritter {
                     return item;
                 }
                 throw new Exception("SentencePattern - chybná délka");
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 string[] raw = data.Split('|');
                 ItemPhrase item = new ItemPhrase {
                     From = raw[0],
@@ -919,7 +928,7 @@ namespace TranslatorWritter {
                     return item;
                 }
                 return null;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 string[] raw = data.Split('|');
                 ItemSimpleWord item = new ItemSimpleWord {
                     From = raw[0],
@@ -939,6 +948,7 @@ namespace TranslatorWritter {
             foreach (TranslatingToData to in To) {
                 if (to!=null) if (to.Valid(notAllowedS)) return true;
             }            
+            if (To.Count==0) return false;
 
             return true;
         }
@@ -1022,7 +1032,7 @@ namespace TranslatorWritter {
                     return item;
                 }
                 return null;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 string[] raw = data.Split('|');
                 ItemInterjection item = new ItemInterjection {
                     From = raw[0],
@@ -1055,15 +1065,14 @@ namespace TranslatorWritter {
                     return item;
                 }
                 return null;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 string[] raw = data.Split('|');
                 ItemConjunction item = new ItemConjunction {
                     From = raw[0],
                 };
                 item.To=Methods.LoadListTranslatingToData(1, raw);
                 return item;
-            }
-            throw new Exception("unknown version");
+            }else throw new Exception("unknown version");
         }
     }
 
@@ -1088,7 +1097,7 @@ namespace TranslatorWritter {
                     return item;
                 }
                 return null;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 string[] raw = data.Split('|');
                 ItemParticle item = new ItemParticle {
                     From = raw[0],
@@ -1121,15 +1130,14 @@ namespace TranslatorWritter {
                     return item;
                 }
                 return null;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 string[] raw = data.Split('|');
                 ItemAdverb item = new ItemAdverb {
                     From = raw[0],
                 };
                 item.To=Methods.LoadListTranslatingToData(1, raw);
                 return item;
-            }
-            throw new Exception("unknown version");
+            }else throw new Exception("unknown version");
         }
     }
 
@@ -1328,34 +1336,45 @@ namespace TranslatorWritter {
 
     #region For SimpleUI
     public class TranslatingToDataWithPattern : ICloneable{
-        public TranslatingToDataWithPattern(){ 
-            Body="";
-            Pattern="";
-            Comment="";
-        }
-
-        public string Body, Pattern, Comment;
+        public string Body, Pattern, Comment, Source;
         const char dataSeparator='|';
         static readonly char[] notAllowedPattern=new char[]{' ', ' ', '|', '\t', ';', '_', '/', '"'}, 
             notAllowedComment=new char[]{'|', '\t', '"'};
        
+        public TranslatingToDataWithPattern(){ 
+            Body="";
+            Pattern="";
+            Comment="";
+            Source="";
+        }
+
         public string Save() { 
             return Body.Replace(dataSeparator,'_')+dataSeparator+
                 Pattern.Replace(dataSeparator,'_')+dataSeparator+
-                Comment.Replace(dataSeparator,'_');
+                Comment.Replace(dataSeparator,'_')+dataSeparator+
+                Source.Replace(dataSeparator,'_');
         } 
         
         public string SavePacker() { 
             return Body.Replace(dataSeparator,'_')+dataSeparator+
                 Pattern.Replace(dataSeparator,'_')+dataSeparator+
-                Comment.Replace(dataSeparator,'_');
+                Comment.Replace(dataSeparator,'_')+dataSeparator+
+                Source.Replace(dataSeparator,'_');
         }
 
         public void Load(string rawData) { 
-            string[] data=rawData.Split(dataSeparator);
-            Body=data[0];
-            Pattern=data[1];
-            Comment=data[2];
+            if (FormMain.LoadedVersionNumber<=2){ 
+                string[] data=rawData.Split(dataSeparator);
+                Body=data[0];
+                Pattern=data[1];
+                Comment=data[2];
+            } else if (FormMain.LoadedVersionNumber==3){ 
+                string[] data=rawData.Split(dataSeparator);
+                Body=data[0];
+                Pattern=data[1];
+                Comment=data[2];
+                if (data.Length==4) Source=data[3];                
+            }else throw new Exception("unknown version");
         }
 
         public bool Valid(char[] notAllowedBody) {
@@ -1387,24 +1406,33 @@ namespace TranslatorWritter {
 
     public class TranslatingToData{
         const char dataSeparator='|';
-        public string Text, Comment;
+        public string Text, Comment, Source;
 
         public TranslatingToData(){ 
             Text="";
             Comment="";
+            Source="";
         }
 
         static readonly char[] notAllowedComment=new char[]{'|', '\t', '"'};
         
-        public string Save() { 
+        public string Save() {
             return Text.Replace(dataSeparator,'_') + dataSeparator + 
-                Comment.Replace(dataSeparator,'_');
+                Comment.Replace(dataSeparator,'_') + dataSeparator +
+                Source.Replace(dataSeparator,'_');
         }
 
         public void Load(string rawData) { 
-            string[] data=rawData.Split(dataSeparator);
-            Text=data[0];
-            Comment=data[1];
+            if (FormMain.LoadedVersionNumber<=2) { 
+                string[] data=rawData.Split(dataSeparator);
+                Text=data[0];
+                Comment=data[1];
+            } else if (FormMain.LoadedVersionNumber==3) { 
+                string[] data=rawData.Split(dataSeparator);
+                Text=data[0];
+                Comment=data[1];
+                if (data.Length==3) Source=data[2];
+            }else throw new Exception("unknow version"); 
         }
 
         public virtual bool Valid(char[] notAllowedText) {
@@ -1483,7 +1511,7 @@ namespace TranslatorWritter {
                     item.To.Add(new TranslatingToDataWithPattern{Body=raw[i], Pattern=raw[i+1], Comment=""});
                 }
                 return item;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 ItemNoun item = new ItemNoun {
                     From = raw[0],                       
                     PatternFrom = raw[1],
@@ -1682,81 +1710,81 @@ namespace TranslatorWritter {
                     "ěmito",
                 }
             };
-        public static ItemPatternPronoun tEN => new ItemPatternPronoun{
-                Name="tEN",
+        public static ItemPatternPronoun TEN => new ItemPatternPronoun{
+                Name="TEN",
                 type=PronounType.DeklinationWithGender,
                 Shapes=new string[]{
                     // M Ž
-                    "en",
-                    "oho",
-                    "omu",
-                    "oho",
+                    "ten",
+                    "toho",
+                    "tomu",
+                    "toho",
                     "-",
-                    "om",
-                    "ím",
+                    "tom",
+                    "tím",
 
                     // M Ž
-                    "i",
-                    "ěch",
-                    "ěm",
-                    "i",
+                    "ti",
+                    "těch",
+                    "těm",
+                    "ti",
                     "-",
-                    "ěch",
-                    "ěmi",
+                    "těch",
+                    "těmi",
 
                     // M N
-                    "en",
-                    "oho",
-                    "omu",
-                    "en",
+                    "ten",
+                    "toho",
+                    "tomu",
+                    "ten",
                     "-",
-                    "om",
-                    "ím",
+                    "tom",
+                    "tím",
 
                     // M n
-                    "y",
-                    "ěch",
-                    "ěm",
-                    "y",
+                    "ty",
+                    "těch",
+                    "těm",
+                    "ty",
                     "-",
-                    "ěch",
-                    "ěmi",
+                    "těch",
+                    "těmi",
 
                     // ž
-                    "a",
-                    "é",
-                    "é",
-                    "u",
+                    "ta",
+                    "té",
+                    "té",
+                    "tu",
                     "-",
-                    "é",
-                    "ou",
+                    "té",
+                    "tou",
 
                     // ž
-                    "y",
-                    "ěch",
-                    "ěm",
-                    "y",
+                    "ty",
+                    "těch",
+                    "těm",
+                    "ty",
                     "-",
-                    "ěch",
-                    "ěmi",
+                    "těch",
+                    "těmi",
 
                     // s
-                    "o",
-                    "oho",
-                    "omu",
-                    "o",
+                    "to",
+                    "toho",
+                    "tomu",
+                    "to",
                     "-",
-                    "om",
-                    "ím",
+                    "tom",
+                    "tím",
 
                     // stř
-                    "y",
-                    "ěch",
-                    "ěm",
-                    "y",
+                    "ty",
+                    "těch",
+                    "těm",
+                    "ty",
                     "-",
-                    "ěch",
-                    "ěmi",
+                    "těch",
+                    "těmi",
                 }
             };
 
@@ -1968,7 +1996,7 @@ namespace TranslatorWritter {
                     return item;
                 }
                 throw new Exception("PatternPronoun - Chybná délka");
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 if (raw.Length==14+1) {
                     ItemPatternPronoun item = new ItemPatternPronoun {
                         Name = raw[0],
@@ -2052,8 +2080,7 @@ namespace TranslatorWritter {
                     return item;
                 }
                 throw new Exception("PatternPronoun - Chybná délka");
-            }
-            throw new Exception("Unknown version");
+            }else throw new Exception("Unknown version");
         }
 
         internal override void Optimize() {
@@ -2067,7 +2094,7 @@ namespace TranslatorWritter {
                 for (int j=0; j<Shapes.Length/*(Type==PronounType.NoDeklination ? 1: (Type==PronounType.DeklinationOnlySingle?7: ( Type==PronounType.Deklination?14: (Type==PronounType.DeklinationWithGender?14*4:0))))*/; j++) {
                     string s = Shapes[j];
 
-                    if (s==null)continue;
+                    if (s==null) continue;
                     if (s=="-") continue;
                     if (s=="—") { Shapes[j]="-"; continue; }
                     if (s.Contains(",")) {
@@ -2232,7 +2259,7 @@ namespace TranslatorWritter {
                     return item;
                 }
                 return null;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 ItemPronoun item = new ItemPronoun {
                     From = raw[0],                       
                     PatternFrom = raw[1],
@@ -2256,12 +2283,12 @@ namespace TranslatorWritter {
                 };
             }
         }
-        public static ItemPronoun tEN{
+        public static ItemPronoun TEN{
             get{
                 return new ItemPronoun { 
-                    From="t",
-                    PatternFrom="tEN",                
-                    To=new List<TranslatingToDataWithPattern>{new TranslatingToDataWithPattern{Body="t", Pattern="tEN" } }
+                    From="",
+                    PatternFrom="TEN",                
+                    To=new List<TranslatingToDataWithPattern>{new TranslatingToDataWithPattern{Body="", Pattern="TEN" } }
                 };
             }
         }
@@ -2824,7 +2851,7 @@ namespace TranslatorWritter {
                     };
                 }
                 return null;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 ItemAdjective item = new ItemAdjective {
                     From = raw[0],                       
                     PatternFrom = raw[1],
@@ -2967,7 +2994,7 @@ namespace TranslatorWritter {
                     };
                 }
                 return null;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 string[] raw=data.Split('|');
                 ItemNumber item = new ItemNumber {
                     From = raw[0],                       
@@ -4177,7 +4204,7 @@ namespace TranslatorWritter {
                     };
                 }
                 return null;
-            } else { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) {
                 string[] raw=data.Split('|');
 
                 ItemVerb item = new ItemVerb {
@@ -4187,7 +4214,7 @@ namespace TranslatorWritter {
                 item.To=Methods.LoadListTranslatingToDataWithPattern(2, raw);
             
                 return item;
-            }
+            }else throw new Exception("unknow version");
         }
 
         public new string Save() {
@@ -4201,7 +4228,7 @@ namespace TranslatorWritter {
         public new string SavePacker() {
             string data=From+"|"+PatternFrom+"|";
             foreach (TranslatingToDataWithPattern d in To) { 
-                if (!d.Body.Contains(' ') && !d.Body.Contains('?') && !d.Body.Contains(' ')) data+=d.Body+"|"+d.Pattern+"|"+d.Comment+"|";
+                if (!d.Body.Contains(' ') && !d.Body.Contains('?') && !d.Body.Contains(' ')) data+=d.Body+"|"+d.Pattern+"|"+d.Comment+"|"+d.Source+"|";
             }
             if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
             return data.Substring(0, data.Length-1);
@@ -4362,7 +4389,7 @@ namespace TranslatorWritter {
                     return item;
                 }
                 return null;
-            } else if (FormMain.LoadedVersionNumber==2) { 
+            } else if (FormMain.LoadedVersionNumber==2 || FormMain.LoadedVersionNumber==3) { 
                 //if (raw.Length==4) {
                 //    ItemPreposition item = new ItemPreposition {
                 //        From = raw[0],
@@ -4386,7 +4413,7 @@ namespace TranslatorWritter {
                     return item;
                 //}
                // return null;
-            } else throw new Exception();
+            } else throw new Exception("unknown version");
         }
     }
 

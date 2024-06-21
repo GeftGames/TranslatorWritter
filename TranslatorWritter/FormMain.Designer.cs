@@ -880,6 +880,8 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage39 = new System.Windows.Forms.TabPage();
+            this.comboBoxCountry = new System.Windows.Forms.ComboBox();
+            this.comboBoxTypeLang = new System.Windows.Forms.ComboBox();
             this.numericUpDownQuality = new System.Windows.Forms.NumericUpDown();
             this.label160 = new System.Windows.Forms.Label();
             this.label159 = new System.Windows.Forms.Label();
@@ -898,7 +900,6 @@
             this.textBoxZachytne = new System.Windows.Forms.TextBox();
             this.textBoxSelect = new System.Windows.Forms.TextBox();
             this.label126 = new System.Windows.Forms.Label();
-            this.textBoxtypeLang = new System.Windows.Forms.TextBox();
             this.label125 = new System.Windows.Forms.Label();
             this.textBoxGPS = new System.Windows.Forms.TextBox();
             this.label134 = new System.Windows.Forms.Label();
@@ -907,6 +908,7 @@
             this.textBoxOblast = new System.Windows.Forms.TextBox();
             this.label167 = new System.Windows.Forms.Label();
             this.label169 = new System.Windows.Forms.Label();
+            this.label215 = new System.Windows.Forms.Label();
             this.textBoxLocOriginal = new System.Windows.Forms.TextBox();
             this.textBoxSpadaPod = new System.Windows.Forms.TextBox();
             this.tabPage40 = new System.Windows.Forms.TabPage();
@@ -918,6 +920,11 @@
             this.buttonInfoText = new System.Windows.Forms.Button();
             this.textBoxComment = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.tabPageCite = new System.Windows.Forms.TabPage();
+            this.buttonCiteAddAuto = new System.Windows.Forms.Button();
+            this.buttonCiteAddWeb = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.textBoxCite = new System.Windows.Forms.TextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabControl3 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -1705,6 +1712,7 @@
             this.toolStripMenuItem158 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator65 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem159 = new System.Windows.Forms.ToolStripMenuItem();
+            this.button4 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerSimpleWord)).BeginInit();
             this.splitContainerSimpleWord.Panel1.SuspendLayout();
@@ -1842,6 +1850,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownQuality)).BeginInit();
             this.tabPage40.SuspendLayout();
             this.tabPage41.SuspendLayout();
+            this.tabPageCite.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabControl3.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -2088,13 +2097,13 @@
             this.zabaličkovačToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.vytvořitToolStripMenuItem});
             this.zabaličkovačToolStripMenuItem.Name = "zabaličkovačToolStripMenuItem";
-            this.zabaličkovačToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.zabaličkovačToolStripMenuItem.Size = new System.Drawing.Size(168, 24);
             this.zabaličkovačToolStripMenuItem.Text = "zabaličkovač";
             // 
             // vytvořitToolStripMenuItem
             // 
             this.vytvořitToolStripMenuItem.Name = "vytvořitToolStripMenuItem";
-            this.vytvořitToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.vytvořitToolStripMenuItem.Size = new System.Drawing.Size(167, 24);
             this.vytvořitToolStripMenuItem.Text = "Zabaličkovat";
             this.vytvořitToolStripMenuItem.Click += new System.EventHandler(this.vytvořitToolStripMenuItem_Click);
             // 
@@ -2233,7 +2242,7 @@
             this.textBoxInfo.Multiline = true;
             this.textBoxInfo.Name = "textBoxInfo";
             this.textBoxInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxInfo.Size = new System.Drawing.Size(1272, 869);
+            this.textBoxInfo.Size = new System.Drawing.Size(1272, 904);
             this.textBoxInfo.TabIndex = 3;
             this.textBoxInfo.TextChanged += new System.EventHandler(this.TextBoxInfo_TextChanged);
             // 
@@ -10514,6 +10523,7 @@
             this.tabControl2.Controls.Add(this.tabPage39);
             this.tabControl2.Controls.Add(this.tabPage40);
             this.tabControl2.Controls.Add(this.tabPage41);
+            this.tabControl2.Controls.Add(this.tabPageCite);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl2.Location = new System.Drawing.Point(3, 3);
             this.tabControl2.Name = "tabControl2";
@@ -10523,6 +10533,10 @@
             // 
             // tabPage39
             // 
+            this.tabPage39.AutoScroll = true;
+            this.tabPage39.AutoScrollMinSize = new System.Drawing.Size(0, 600);
+            this.tabPage39.Controls.Add(this.comboBoxCountry);
+            this.tabPage39.Controls.Add(this.comboBoxTypeLang);
             this.tabPage39.Controls.Add(this.numericUpDownQuality);
             this.tabPage39.Controls.Add(this.labelAuthor);
             this.tabPage39.Controls.Add(this.label160);
@@ -10542,7 +10556,6 @@
             this.tabPage39.Controls.Add(this.textBoxZachytne);
             this.tabPage39.Controls.Add(this.textBoxSelect);
             this.tabPage39.Controls.Add(this.label126);
-            this.tabPage39.Controls.Add(this.textBoxtypeLang);
             this.tabPage39.Controls.Add(this.label125);
             this.tabPage39.Controls.Add(this.textBoxGPS);
             this.tabPage39.Controls.Add(this.labelLangFrom);
@@ -10554,6 +10567,7 @@
             this.tabPage39.Controls.Add(this.textBoxOblast);
             this.tabPage39.Controls.Add(this.label167);
             this.tabPage39.Controls.Add(this.label169);
+            this.tabPage39.Controls.Add(this.label215);
             this.tabPage39.Controls.Add(this.labelLangTo);
             this.tabPage39.Controls.Add(this.textBoxLocOriginal);
             this.tabPage39.Controls.Add(this.textBoxSpadaPod);
@@ -10566,9 +10580,45 @@
             this.tabPage39.Text = "Head";
             this.tabPage39.UseVisualStyleBackColor = true;
             // 
+            // comboBoxCountry
+            // 
+            this.comboBoxCountry.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCountry.FormattingEnabled = true;
+            this.comboBoxCountry.Items.AddRange(new object[] {
+            "<Neurčeno>",
+            "Morava",
+            "Slezsko v ČR",
+            "Slezsko v Polsku",
+            "Slovensko",
+            "Rakousko",
+            "Čechy",
+            "Polsko",
+            "Morava-enklávy ve Slezsku"});
+            this.comboBoxCountry.Location = new System.Drawing.Point(159, 439);
+            this.comboBoxCountry.Name = "comboBoxCountry";
+            this.comboBoxCountry.Size = new System.Drawing.Size(187, 28);
+            this.comboBoxCountry.TabIndex = 11;
+            // 
+            // comboBoxTypeLang
+            // 
+            this.comboBoxTypeLang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxTypeLang.FormattingEnabled = true;
+            this.comboBoxTypeLang.Items.AddRange(new object[] {
+            "<neurčeno>",
+            "městká mluva",
+            "mluva městké části",
+            "vesnická mluva",
+            "obecné nářečí",
+            "jazyk",
+            "hantýrka"});
+            this.comboBoxTypeLang.Location = new System.Drawing.Point(158, 277);
+            this.comboBoxTypeLang.Name = "comboBoxTypeLang";
+            this.comboBoxTypeLang.Size = new System.Drawing.Size(187, 28);
+            this.comboBoxTypeLang.TabIndex = 10;
+            // 
             // numericUpDownQuality
             // 
-            this.numericUpDownQuality.Location = new System.Drawing.Point(158, 438);
+            this.numericUpDownQuality.Location = new System.Drawing.Point(158, 484);
             this.numericUpDownQuality.Maximum = new decimal(new int[] {
             5,
             0,
@@ -10671,7 +10721,7 @@
             // label166
             // 
             this.label166.AutoSize = true;
-            this.label166.Location = new System.Drawing.Point(369, 444);
+            this.label166.Location = new System.Drawing.Point(369, 490);
             this.label166.Name = "label166";
             this.label166.Size = new System.Drawing.Size(579, 100);
             this.label166.TabIndex = 7;
@@ -10682,7 +10732,7 @@
             // label163
             // 
             this.label163.AutoSize = true;
-            this.label163.Location = new System.Drawing.Point(25, 440);
+            this.label163.Location = new System.Drawing.Point(25, 486);
             this.label163.Name = "label163";
             this.label163.Size = new System.Drawing.Size(55, 20);
             this.label163.TabIndex = 7;
@@ -10732,15 +10782,6 @@
             this.label126.Size = new System.Drawing.Size(71, 20);
             this.label126.TabIndex = 8;
             this.label126.Text = "Zařazení";
-            // 
-            // textBoxtypeLang
-            // 
-            this.textBoxtypeLang.Location = new System.Drawing.Point(158, 277);
-            this.textBoxtypeLang.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.textBoxtypeLang.Name = "textBoxtypeLang";
-            this.textBoxtypeLang.Size = new System.Drawing.Size(187, 26);
-            this.textBoxtypeLang.TabIndex = 0;
-            this.textBoxtypeLang.TextChanged += new System.EventHandler(this.TextBoxLangFrom_TextChanged);
             // 
             // label125
             // 
@@ -10813,6 +10854,15 @@
             this.label169.Size = new System.Drawing.Size(87, 20);
             this.label169.TabIndex = 7;
             this.label169.Text = "Spadá pod";
+            // 
+            // label215
+            // 
+            this.label215.AutoSize = true;
+            this.label215.Location = new System.Drawing.Point(26, 442);
+            this.label215.Name = "label215";
+            this.label215.Size = new System.Drawing.Size(50, 20);
+            this.label215.TabIndex = 7;
+            this.label215.Text = "Země";
             // 
             // textBoxLocOriginal
             // 
@@ -10919,7 +10969,7 @@
             this.textBoxComment.Multiline = true;
             this.textBoxComment.Name = "textBoxComment";
             this.textBoxComment.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxComment.Size = new System.Drawing.Size(1272, 800);
+            this.textBoxComment.Size = new System.Drawing.Size(1272, 835);
             this.textBoxComment.TabIndex = 3;
             this.textBoxComment.TextChanged += new System.EventHandler(this.TextBoxInfo_TextChanged);
             // 
@@ -10931,6 +10981,64 @@
             this.label3.Size = new System.Drawing.Size(179, 20);
             this.label3.TabIndex = 7;
             this.label3.Text = "Komentář pro rozkliknutí";
+            // 
+            // tabPageCite
+            // 
+            this.tabPageCite.Controls.Add(this.button4);
+            this.tabPageCite.Controls.Add(this.buttonCiteAddAuto);
+            this.tabPageCite.Controls.Add(this.buttonCiteAddWeb);
+            this.tabPageCite.Controls.Add(this.button3);
+            this.tabPageCite.Controls.Add(this.textBoxCite);
+            this.tabPageCite.Location = new System.Drawing.Point(4, 29);
+            this.tabPageCite.Name = "tabPageCite";
+            this.tabPageCite.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageCite.Size = new System.Drawing.Size(1278, 714);
+            this.tabPageCite.TabIndex = 3;
+            this.tabPageCite.Text = "Cite";
+            this.tabPageCite.UseVisualStyleBackColor = true;
+            // 
+            // buttonCiteAddAuto
+            // 
+            this.buttonCiteAddAuto.Location = new System.Drawing.Point(228, 6);
+            this.buttonCiteAddAuto.Name = "buttonCiteAddAuto";
+            this.buttonCiteAddAuto.Size = new System.Drawing.Size(105, 33);
+            this.buttonCiteAddAuto.TabIndex = 9;
+            this.buttonCiteAddAuto.Text = "Add sncj";
+            this.buttonCiteAddAuto.UseVisualStyleBackColor = true;
+            this.buttonCiteAddAuto.Click += new System.EventHandler(this.buttonCiteAddAuto_Click);
+            // 
+            // buttonCiteAddWeb
+            // 
+            this.buttonCiteAddWeb.Location = new System.Drawing.Point(117, 6);
+            this.buttonCiteAddWeb.Name = "buttonCiteAddWeb";
+            this.buttonCiteAddWeb.Size = new System.Drawing.Size(105, 33);
+            this.buttonCiteAddWeb.TabIndex = 9;
+            this.buttonCiteAddWeb.Text = "Add web";
+            this.buttonCiteAddWeb.UseVisualStyleBackColor = true;
+            this.buttonCiteAddWeb.Click += new System.EventHandler(this.buttonCiteAddWeb_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(6, 6);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(105, 33);
+            this.button3.TabIndex = 9;
+            this.button3.Text = "Add book";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            // 
+            // textBoxCite
+            // 
+            this.textBoxCite.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCite.Location = new System.Drawing.Point(3, 45);
+            this.textBoxCite.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxCite.Multiline = true;
+            this.textBoxCite.Name = "textBoxCite";
+            this.textBoxCite.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxCite.Size = new System.Drawing.Size(1272, 740);
+            this.textBoxCite.TabIndex = 4;
             // 
             // tabPage4
             // 
@@ -18061,6 +18169,16 @@
             this.toolStripMenuItem159.Size = new System.Drawing.Size(118, 22);
             this.toolStripMenuItem159.Text = "Cancel";
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(339, 6);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(105, 33);
+            this.button4.TabIndex = 9;
+            this.button4.Text = "Add cja";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -18289,6 +18407,8 @@
             this.tabPage40.PerformLayout();
             this.tabPage41.ResumeLayout(false);
             this.tabPage41.PerformLayout();
+            this.tabPageCite.ResumeLayout(false);
+            this.tabPageCite.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.tabControl3.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -19982,7 +20102,6 @@
         private System.Windows.Forms.TabControl tabControl2;
         private System.Windows.Forms.TabPage tabPage39;
         private System.Windows.Forms.Label label126;
-        private System.Windows.Forms.TextBox textBoxtypeLang;
         private System.Windows.Forms.Label label125;
         private System.Windows.Forms.TextBox textBoxGPS;
         private System.Windows.Forms.TabPage tabPage40;
@@ -20111,6 +20230,15 @@
         private System.Windows.Forms.CheckBox checkBoxSentencePart;
         private System.Windows.Forms.ToolStripMenuItem duplikovatToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aBCEndingToolStripMenuItem;
+        private System.Windows.Forms.ComboBox comboBoxTypeLang;
+        private System.Windows.Forms.TabPage tabPageCite;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.TextBox textBoxCite;
+        private System.Windows.Forms.Button buttonCiteAddWeb;
+        private System.Windows.Forms.Button buttonCiteAddAuto;
+        private System.Windows.Forms.ComboBox comboBoxCountry;
+        private System.Windows.Forms.Label label215;
+        private System.Windows.Forms.Button button4;
     }
 }
 

@@ -10,11 +10,14 @@ namespace TranslatorWritter {
         List<Button> ListButtonRemove=new List<Button>();
         List<Label> ListSample=new List<Label>();
 
+        List<Label> ListLabelsSource=new List<Label>();
+        List<TextBox> ListTextBoxsSource=new List<TextBox>();
+
         public SimpleToWithPattern() {
             InitializeComponent();
         }
 
-        public void Add(string body, string ending, string comment) {
+        public void Add(string body, string ending, string comment, string source) {
             int id=ListTextBoxsBase.Count;
             int posY=ListTextBoxsBase.Count*40+40;
 
@@ -68,7 +71,26 @@ namespace TranslatorWritter {
                 Anchor = basicAnchor,
                 Text = comment
             };
-            //textBoxComment.Text=comment;
+
+            // source label
+            Label labelSource = new Label {
+                AutoSize = true,
+                Location = new System.Drawing.Point(844, 9 + posY),
+                Margin = new Padding(4, 0, 4, 0),
+                Size = new System.Drawing.Size(71, 17),
+                Anchor=basicAnchor,
+                Text = "Zdroj"
+            };
+
+            // source textbox
+            TextBox textBoxSource = new TextBox {
+                Location = new System.Drawing.Point(884, 6 + posY),
+                Margin = new Padding(5, 6, 5, 6),
+                Size = new System.Drawing.Size(100, 23),
+                Anchor = basicAnchor,
+                Text = source
+            };
+
 
             Button buttonRemove = new Button {
                 Location = new System.Drawing.Point(6, 5+posY),
@@ -88,6 +110,8 @@ namespace TranslatorWritter {
             ListButtonRemove.Add(buttonRemove);
             ListSample.Add(labelNounInputPatternTo);
             ListTextBoxsComment.Add(textBoxComment);
+            ListTextBoxsSource.Add(textBoxSource);
+            ListLabelsSource.Add(labelSource);
 
             Controls.Add(buttonRemove);
             Controls.Add(textBoxNounTo);
@@ -95,6 +119,8 @@ namespace TranslatorWritter {
             Controls.Add(labelNounInputPatternTo);
             Controls.Add(labelNounShowTo);
             Controls.Add(comboBoxNounInputPatternTo);
+            Controls.Add(labelSource);
+            Controls.Add(textBoxSource);
         }
 
         public void Remove(int indexOfRow) {
@@ -138,6 +164,8 @@ namespace TranslatorWritter {
                 ListButtonRemove[i].Location=new System.Drawing.Point(ListButtonRemove[i].Location.X, posY);
                 ListSample[i].Location=new System.Drawing.Point(ListSample[i].Location.X, posY);
                 ListTextBoxsComment[i].Location=new System.Drawing.Point(ListTextBoxsComment[i].Location.X, posY);
+                ListTextBoxsSource[i].Location=new System.Drawing.Point(ListTextBoxsSource[i].Location.X, posY);
+                ListLabelsSource[i].Location=new System.Drawing.Point(ListLabelsSource[i].Location.X, posY);
             }
         }
 
@@ -154,7 +182,8 @@ namespace TranslatorWritter {
                 data[i]=new TranslatingToDataWithPattern{
                     Body=ListTextBoxsBase[i].Text,
                     Pattern=ListComboBoxPatterns[i].Text,
-                    Comment=ListTextBoxsComment[i].Text
+                    Comment=ListTextBoxsComment[i].Text,
+                    Source=ListTextBoxsSource[i].Text
                 };
             }
             return data;
@@ -164,7 +193,7 @@ namespace TranslatorWritter {
             Clear();
             for (int i=0; i<data.Length; i++){
                 TranslatingToDataWithPattern row = data[i];
-                Add(row.Body, row.Pattern, row.Comment);
+                Add(row.Body, row.Pattern, row.Comment, row.Source);
             }
         }
 
@@ -190,6 +219,8 @@ namespace TranslatorWritter {
             foreach (var i in ListTextBoxsComment) Controls.Remove(i);
             foreach (var i in ListLabelShows) Controls.Remove(i);
             foreach (var i in ListComboBoxPatterns) Controls.Remove(i);
+            foreach (var i in ListTextBoxsSource) Controls.Remove(i);
+            foreach (var i in ListLabelsSource) Controls.Remove(i);
 
             ListTextBoxsBase.Clear();
             ListComboBoxPatterns.Clear();
@@ -197,6 +228,8 @@ namespace TranslatorWritter {
             ListButtonRemove.Clear();
             ListSample.Clear();
             ListTextBoxsComment.Clear();
+            ListTextBoxsSource.Clear();
+            ListLabelsSource.Clear();
         }
 
         public void SetShowNoun(int n, ItemPatternNoun[] nounPattern) {
@@ -219,7 +252,7 @@ namespace TranslatorWritter {
         }
 
         private void buttonAdd_Click(object sender, System.EventArgs e) {
-            Add("","","");
+            Add("","","", "");
         }
     }
 }

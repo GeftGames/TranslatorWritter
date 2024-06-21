@@ -22,7 +22,8 @@ using File = System.IO.File;
 namespace TranslatorWritter {
     public partial class FormMain :Form{
         // Poslední verze projektu
-        public const int CurrentVersion=2;
+        // ve 3 pole pro zdroje
+        public const int CurrentVersion=3;
 
         #region Lists
         List<ItemSimpleWord> itemsSimpleWords, itemsSimpleWordsFiltered;
@@ -170,7 +171,7 @@ namespace TranslatorWritter {
             SentencePartSetNone();
             SentenceSetNone();
             SentencePatternSetNone();
-            SetNoneSentencePatternPart();
+            SentencePatternPartSetNone();
 
             NounSetNone();
             PatternNounFromSetNone();
@@ -429,7 +430,7 @@ namespace TranslatorWritter {
             string[] lines = File.ReadAllLines(file);
             if (lines.Length > 0) {
                 // Supporting versions
-                if (lines[0] == "TW v0.1" || lines[0] == "TW v1.0" || lines[0] == NewestSaveVersion) {
+                if (lines[0] == "TW v0.1" || lines[0] == "TW v1.0" || lines[0] == "TW v2" || lines[0] == NewestSaveVersion) {
                     // Current version
                     LoadedSaveVersion=lines[0];
                     if (LoadedSaveVersion.Length>4){
@@ -492,6 +493,10 @@ namespace TranslatorWritter {
                         textBoxComment.Text=line.Substring(1).Replace("\\n", Environment.NewLine);
                         break;
 
+                    case "b":
+                        textBoxCite.Text=line.Substring(1).Replace("\\n", Environment.NewLine);
+                        break;
+
                     case "z":
                         textBoxZachytne.Text = line.Substring(1);
                         break;
@@ -508,8 +513,22 @@ namespace TranslatorWritter {
                         textBoxGPS.Text = line.Substring(1);
                         break;
 
+                    case "u":
+                        int.TryParse(line.Substring(1), out int val);
+                        comboBoxCountry.SelectedIndex=val;
+                        break;
+
                     case "x":
-                        textBoxtypeLang.Text = line.Substring(1);
+                        {
+                            //textBoxtypeLang.Text = line.Substring(1);
+                            if (int.TryParse(line.Substring(1), out int ind)) {
+                                comboBoxTypeLang.SelectedIndex = ind;
+                            } else { 
+                                if (line.Substring(1)=="lokální mluva" || line.Substring(1)=="vesnická mluva") comboBoxTypeLang.SelectedIndex = 3;
+                                else if (line.Substring(1)=="městká mluva") comboBoxTypeLang.SelectedIndex = 1;
+                                else comboBoxTypeLang.SelectedIndex = 0;
+                            }
+                        }
                         break;
 
                     case "q":
@@ -769,8 +788,10 @@ namespace TranslatorWritter {
             }
 
             TextBoxPhrasePatternFilter_TextChanged(null, null);
-            TextBoxSentencePatternFilter_TextChanged(null, null);
             TextBoxSentenceFilter_TextChanged(null, null);
+            TextBoxSentencePartFilter_TextChanged(null, null);
+            TextBoxSentencePatternFilter_TextChanged(null, null);
+            TextBoxSentencePatternPartFilter_TextChanged(null, null);
             TextBoxSimpleWordFilter_TextChanged(null, null);
             TextBoxNounFilter_TextChanged(null, null);
             TextBoxPatternNounFromFilter_TextChanged(null, null);
@@ -788,7 +809,6 @@ namespace TranslatorWritter {
             TextBoxInterjectionFilter_TextChanged(null, null);
             TextBoxParticleFilter_TextChanged(null, null);
             TextBoxAdverbFilter_TextChanged(null, null);
-            TextBoxSentencePatternPartFilter_TextChanged(null, null);
             TextBoxPhraseFilter_TextChanged(null, null);
             TextBoxReplaceSFilter_TextChanged(null, null);
             TextBoxReplaceEFilter_TextChanged(null, null);
@@ -811,11 +831,13 @@ namespace TranslatorWritter {
             if (!string.IsNullOrEmpty(textBoxInfo.Text)) data += "i" + textBoxInfo.Text.Replace(Environment.NewLine, "\\n") + Environment.NewLine;
             if (!string.IsNullOrEmpty(textBoxSelect.Text)) data += "e" + textBoxSelect.Text + Environment.NewLine;
             if (!string.IsNullOrEmpty(textBoxComment.Text)) data += "c" + textBoxComment.Text.Replace(Environment.NewLine, "\\n") + Environment.NewLine;
+            if (!string.IsNullOrEmpty(textBoxCite.Text)) data += "b" + textBoxCite.Text.Replace(Environment.NewLine, "\\n") + Environment.NewLine;
             if (!string.IsNullOrEmpty(textBoxZachytne.Text)) data += "z" + textBoxZachytne.Text + Environment.NewLine;
+            if (comboBoxCountry.SelectedIndex>0) data += "u" + comboBoxCountry.SelectedIndex + Environment.NewLine;
             if (!string.IsNullOrEmpty(textBoxSpadaPod.Text)) data += "s" + textBoxSpadaPod.Text + Environment.NewLine;
             if (!string.IsNullOrEmpty(textBoxLang.Text)) data += "l" + textBoxLang.Text + Environment.NewLine;
             if (!string.IsNullOrEmpty(textBoxGPS.Text)) data += "g" + textBoxGPS.Text + Environment.NewLine;
-            if (!string.IsNullOrEmpty(textBoxtypeLang.Text)) data += "x" + textBoxtypeLang.Text + Environment.NewLine;
+            if (comboBoxTypeLang.SelectedIndex!=-1/*!string.IsNullOrEmpty(textBoxtypeLang.Text)*/) data += "x" + comboBoxTypeLang.SelectedIndex/*textBoxtypeLang.Text*/ + Environment.NewLine;
             if (!string.IsNullOrEmpty(textBoxLocOriginal.Text)) data += "r" + textBoxLocOriginal.Text + Environment.NewLine;
             data += "q" + numericUpDownQuality.Value + Environment.NewLine;
             if (!string.IsNullOrEmpty(textBoxOblast.Text)) data += "o" + textBoxOblast.Text + Environment.NewLine;
@@ -5189,7 +5211,7 @@ namespace TranslatorWritter {
 
         void SetCurrentSentencePatternPart(){
             if (itemsSentencePatternPartsFiltered.Count==0) {
-                SetNoneSentencePatternPart();
+                SentencePatternPartSetNone();
                 return;
             }
 
@@ -5237,7 +5259,7 @@ namespace TranslatorWritter {
 
             int index=listBoxSentencePatternPart.SelectedIndex;
             if (itemsSentencePatternParts.Count==0) {
-                SetNoneSentencePatternPart();
+                SentencePatternPartSetNone();
                 return;
             }
             if (index>=itemsSentencePatternParts.Count)  index=itemsSentencePatternParts.Count-1;
@@ -5250,7 +5272,7 @@ namespace TranslatorWritter {
             doingJob=false;
         }
 
-        void SetNoneSentencePatternPart() {
+        void SentencePatternPartSetNone() {
             textBoxSentencePatternPartFrom.Text="";
             textBoxSentencePatternPartTo.Text="";
             textBoxSentencePatternPartTo.Visible=false;
@@ -5457,7 +5479,6 @@ namespace TranslatorWritter {
             if (CurrentSentencePart==null) return;
 
             CurrentSentencePart.From=textBoxSentencePartFrom.Text;
-          //  CurrentSentencePart.To=textBoxSentencePartTo.Text;
             CurrentSentencePart.Show=checkBoxSentencePart.Checked;
             CurrentSentencePart.To=simpleUISentencePart.GetData().ToList();
         }
@@ -15249,13 +15270,17 @@ namespace TranslatorWritter {
 
         void tenToolStripMenuItem_Click(object sender, EventArgs e) {
             PatternPronounToSaveCurrent();
-            itemsPatternPronounTo.Add(ItemPatternPronoun.tEN);
+            ItemPatternPronoun itemTEN=ItemPatternPronoun.TEN;
+            itemTEN.Optimize();
+            itemsPatternPronounTo.Add(itemTEN);
             PatternPronounToRefresh();
         }
 
         void tENToolStripMenuItem1_Click(object sender, EventArgs e) {
             PatternPronounFromSaveCurrent();
-            itemsPatternPronounFrom.Add(ItemPatternPronoun.tEN);
+            ItemPatternPronoun itemTEN=ItemPatternPronoun.TEN;
+            itemTEN.Optimize();
+            itemsPatternPronounFrom.Add(itemTEN);
             PatternPronounFromRefresh();
         }
 
@@ -15361,51 +15386,51 @@ namespace TranslatorWritter {
         }
 
         private void buttonAddToAdjective_Click(object sender, EventArgs e) {
-            simpleUIAdjective.Add("","","");
+            simpleUIAdjective.Add("","","","");
         }
 
         private void buttonAddToPronoun_Click(object sender, EventArgs e) {
-            simpleUIPronouns.Add("","","");
+            simpleUIPronouns.Add("","","","");
         }
 
         private void buttonAddToAdverb_Click(object sender, EventArgs e) {
-            simpleUIAdverb.Add("","");
+            simpleUIAdverb.Add("","","");
         }
 
         private void buttonAddToPreposition_Click(object sender, EventArgs e) {
-            simpleUIPreposition.Add("","");
+            simpleUIPreposition.Add("","","");
         }
 
         private void buttonAddToConjuction_Click(object sender, EventArgs e) {
-            simpleUIConjuction.Add("","");
+            simpleUIConjuction.Add("","","");
         }
 
         private void buttonAddToInterjection_Click(object sender, EventArgs e) {
-            simpleUIInterjection.Add("","");
+            simpleUIInterjection.Add("","","");
         }
 
         private void buttonAddToParticle_Click(object sender, EventArgs e) {
-            simpleUIParticle.Add("","");
+            simpleUIParticle.Add("","","");
         }
 
         private void buttonAddToSimpleWord_Click(object sender, EventArgs e) {
-            simpleUISimpleWord.Add("", "");
+            simpleUISimpleWord.Add("", "","");
         }
 
         private void buttonAddToNumber_Click(object sender, EventArgs e) {
-            simpleUINumbers.Add("","","");
+            simpleUINumbers.Add("","","","");
         }
 
         private void buttonAddToPhrase_Click(object sender, EventArgs e) {
-            simpleUIPhrase.Add("","");
+            simpleUIPhrase.Add("","","");
         }
 
         private void buttonAddToSentencePart_Click(object sender, EventArgs e) {
-            simpleUISentencePart.Add("","");
+            simpleUISentencePart.Add("","","");
         }
 
         private void buttonSentence_Click(object sender, EventArgs e) {
-            simpleUISentence.Add("","");
+            simpleUISentence.Add("","","");
         }
 
         private void buttonPhrasePatternAdd_Click_1(object sender, EventArgs e) {
@@ -15477,6 +15502,22 @@ namespace TranslatorWritter {
             PatternPronounToRefreshFilteredList();
             PatternPronounToSetListBox();
             doingJob = false;
+        }
+
+        private void button3_Click_1(object sender, EventArgs e) {
+            textBoxCite.Text+="\r\n"+ "kniha|primeni=|jmeno=|nazev=|misto=|vydavatel=|rok_vydani=|strany=|issn=|odkaz=|zpracovano=|shortcut=";
+        }
+
+        private void buttonCiteAddWeb_Click(object sender, EventArgs e) {            
+            textBoxCite.Text+="\r\n"+ "web|nazev=|nazev_webu=|odkaz=|rok_navstevy=|mesic_navstevy=|den_navstevy=|zpracovano=|shortcut=";
+        }
+
+        private void buttonCiteAddAuto_Click(object sender, EventArgs e) {
+            textBoxCite.Text+="\r\n"+ "sncj|i=Čebín BO|zpracovano=";
+        }
+
+        private void button4_Click(object sender, EventArgs e) {
+            textBoxCite.Text+="\r\n"+ "cja|i=Čebín|strany=360-370|zpracovano=";
         }
 
         void addFromToToolStripMenuItem1_Click(object sender, EventArgs e) {
@@ -15674,7 +15715,7 @@ namespace TranslatorWritter {
         }
 
         private void tabControl1_Resize(object sender, EventArgs e) {
-            textBoxComment.Height=tabPage41.Height-textBoxComment.Location.Y;
+          //  textBoxComment.Height=tabPage41.Height-textBoxComment.Location.Y;
         }
 
         private void toolStripMenuItem23_Click_1(object sender, EventArgs e) {
@@ -15871,7 +15912,7 @@ namespace TranslatorWritter {
 
         private void buttonVerbAddTo_Click(object sender, EventArgs e) {
             if (CurrentVerb!=null) {
-                simpleUIVerbs.Add("","","");
+                simpleUIVerbs.Add("","","","");
             }
         }
 
@@ -16049,20 +16090,27 @@ namespace TranslatorWritter {
 
         void tENToolStripMenuItem2_Click(object sender, EventArgs e) {
             PronounSaveCurrent();
-            ItemPronoun pronoun = ItemPronoun.tEN;
+            ItemPronoun pronoun = new ItemPronoun { 
+                From="t",
+                PatternFrom="tEN",                
+                To=new List<TranslatingToDataWithPattern>{new TranslatingToDataWithPattern{Body="", Pattern="TEN" } }
+            };
 
-            if (!itemsPatternPronounFrom.ExistsWithName("tEN")) {//exist
-                itemsPatternPronounFrom.Add(ItemPatternPronoun.tEN);
+          //  if (!itemsPatternPronounFrom.ExistsWithName("tEN")) {//exist
+                ItemPatternPronoun itemTenFrom=ItemPatternPronoun.TEN;
+                itemTenFrom.Optimize();
+                itemsPatternPronounFrom.Add(itemTenFrom);
                 PatternPronounFromRefresh();
 
-                ItemPatternPronoun v= ItemPatternPronoun.tEN;
-                v.AddQuestionMark();
-                itemsPatternPronounTo.Add(v);
+                ItemPatternPronoun itemTenTo=ItemPatternPronoun.TEN;
+                itemTenTo.ConvertToPhonetics();
+                itemTenTo.AddQuestionMark();
+                itemsPatternPronounTo.Add(itemTenTo);
                 PatternPronounToRefresh();
-            }
 
-            itemsPronouns.Add(pronoun);
-            PronounRefresh();
+                itemsPronouns.Add(pronoun);
+                PronounRefresh();
+          //  }
         }
 
         void PronounRefresh(){
@@ -16585,6 +16633,7 @@ namespace TranslatorWritter {
             }
         }
 
+        ///obsolete
         void obaličkovatToolStripMenuItem_Click(object sender, EventArgs e) {
             OpenFileDialog ofd=new OpenFileDialog();
             ofd.Filter="TranslatorWritter Archive|*.trw_a|All files|*.*";
@@ -16649,7 +16698,7 @@ namespace TranslatorWritter {
 
         void button3_Click(object sender, EventArgs e) {
             if (CurrentNoun!=null) {
-                simpleUINouns.Add("","","");
+                simpleUINouns.Add("","","","");
             }
         }
 
@@ -16748,28 +16797,34 @@ namespace TranslatorWritter {
                                 textBoxComment.Text+=Environment.NewLine+line.Substring(1).Replace("\\n", Environment.NewLine);
                                 break;
 
+                            case "b":
+                                textBoxCite.Text+=Environment.NewLine+line.Substring(1).Replace("\\n", Environment.NewLine);
+                                break;
+
                             case "z":
-                                if (string.IsNullOrEmpty(textBoxZachytne.Text)) textBoxAuthor.Text=line.Substring(1);
+                                if (string.IsNullOrEmpty(textBoxZachytne.Text)) textBoxZachytne.Text=line.Substring(1);
                                 break;
 
                             case "l":
-                                if (string.IsNullOrEmpty(textBoxLang.Text)) textBoxAuthor.Text=line.Substring(1);
+                                if (string.IsNullOrEmpty(textBoxLang.Text)) textBoxLang.Text=line.Substring(1);
                                 break;
 
                             case "g":
-                                if (string.IsNullOrEmpty(textBoxGPS.Text)) textBoxAuthor.Text=line.Substring(1);
+                                if (string.IsNullOrEmpty(textBoxGPS.Text)) textBoxGPS.Text=line.Substring(1);
                                 break;
 
                             case "x":
-                                if (string.IsNullOrEmpty(textBoxtypeLang.Text)) textBoxAuthor.Text=line.Substring(1);
+                                if (int.TryParse(line.Substring(1), out int ind)) {
+                                    comboBoxTypeLang.SelectedIndex=ind;
+                                } else comboBoxTypeLang.SelectedIndex=0;
                                 break;
 
                             case "o":
-                                if (string.IsNullOrEmpty(textBoxOblast.Text)) textBoxAuthor.Text=line.Substring(1);
+                                if (string.IsNullOrEmpty(textBoxOblast.Text)) textBoxOblast.Text=line.Substring(1);
                                 break;
 
                             case "r":
-                                if (string.IsNullOrEmpty(textBoxLocOriginal.Text)) textBoxAuthor.Text=line.Substring(1);
+                                if (string.IsNullOrEmpty(textBoxLocOriginal.Text)) textBoxLocOriginal.Text=line.Substring(1);
                                 break;
 
                             case "#":
@@ -17184,7 +17239,7 @@ namespace TranslatorWritter {
                 Location = new Point(0, 110),
                 Size = new Size(splitContainer.Panel2.Width, splitContainer.Panel2.Height - 180),
             };
-            controlUI.Add("","","");
+            controlUI.Add("","","","");
             splitContainer.Panel2.Controls.Add(controlUI);
             return controlUI;
         }
@@ -17195,7 +17250,7 @@ namespace TranslatorWritter {
                 Location = new Point(0, 110),
                 Size = new Size(splitContainer.Panel2.Width, splitContainer.Panel2.Height - 180),
             };
-            controlUI.Add("","");
+            controlUI.Add("","","");
             splitContainer.Panel2.Controls.Add(controlUI);
             return controlUI;
         }

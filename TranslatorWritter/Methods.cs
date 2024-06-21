@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TranslatorWritter {
     internal static class Methods {
@@ -36,16 +38,36 @@ namespace TranslatorWritter {
 
         public static List<TranslatingToData> LoadListTranslatingToData(int start, string[] rawData) {
             List<TranslatingToData> list=new List<TranslatingToData>();
-            for (int i=start; i<rawData.Length-1; i+=2) {
-                list.Add(new TranslatingToData{ Text=rawData[i], Comment=rawData[i+1]});
+            if (FormMain.LoadedVersionNumber<=2) { 
+                for (int i=start; i<rawData.Length; i+=2) {
+                    if (i<rawData.Length-1) list.Add(new TranslatingToData{ Text=rawData[i], Comment=rawData[i+1]});
+                    else if ((i-start)%2==0 && i==rawData.Length-1) 
+                        list.Add(new TranslatingToData{ Text=rawData[i], Comment="", Source=""});
+                }
+            }else if (FormMain.LoadedVersionNumber==3) {  
+                 for (int i=start; i<rawData.Length; i+=3) {
+                    if (i<rawData.Length-1) list.Add(new TranslatingToData{ Text=rawData[i], Comment=rawData[i+1], Source=rawData[i+2]});
+                    else if ((i-start)%2==0 && i==rawData.Length-1) 
+                        list.Add(new TranslatingToData{ Text=rawData[i], Comment="", Source=""});
+                }
             }
+           
             return list;
         }
 
         public static List<TranslatingToDataWithPattern> LoadListTranslatingToDataWithPattern(int start, string[] rawData) {
             List<TranslatingToDataWithPattern> list=new List<TranslatingToDataWithPattern>();
-            for (int i=start; i<rawData.Length-2; i+=3) {
-                list.Add(new TranslatingToDataWithPattern{ Body=rawData[i], Pattern=rawData[i+1], Comment=rawData[i+2]});
+
+            if (FormMain.LoadedVersionNumber<=2){ 
+                 for (int i=start; i<rawData.Length-2; i+=3) {
+                    list.Add(new TranslatingToDataWithPattern{ Body=rawData[i], Pattern=rawData[i+1], Comment=rawData[i+2], Source=""});
+                }
+            } else if (FormMain.LoadedVersionNumber==3){ 
+                for (int i=start; i<rawData.Length-2; i+=4) {
+                    string source="";
+                    if (i+3<rawData.Length)source=rawData[i+3];
+                    list.Add(new TranslatingToDataWithPattern{ Body=rawData[i], Pattern=rawData[i+1], Comment=rawData[i+2], Source=source});
+                }                
             }
             return list;
         }
@@ -206,12 +228,10 @@ namespace TranslatorWritter {
                // bool add=false;
                 List<string> add=new List<string>();
                 foreach (string str in strings) { 
-                    if (!str.Contains('?') && !str.Contains(')') && !str.Contains('(') && !str.Contains(' ') && !str.Contains('*')) {// ret+="?,";
+                    if (!str.Contains(']') && !str.Contains('[') && !str.Contains('?') && !str.Contains(')') && !str.Contains('(') && !str.Contains(' ') && !str.Contains('*')) {// ret+="?,";
                     // else 
                        // ret+=str+","; 
                         add.Add(str);
-
-                     //   add=true;
                     }
                 }
                 if (add.Count==0) return "?";
@@ -298,5 +318,108 @@ namespace TranslatorWritter {
                 return i-start;
             }
         } 
+
+        public static List<(string, ItemTranslatingPattern)> OptimizeNamesToPacker(List<ItemTranslatingPattern> list){
+            List<(string, ItemTranslatingPattern)> arr=new System.Collections.Generic.List<(string, ItemTranslatingPattern)>();
+
+            for (int i=0; i<list.Count; i++){
+                ItemTranslatingPattern p = list[i];
+                string origName=p.Name;
+                string newOpName=NumbToBytes(i);
+                p.Name=newOpName;
+                arr.Add((origName, p));
+            }
+            return arr;
+
+            string NumbToBytes(int number) { 
+                string arr_bytes="";
+                for (int i=0; i<(4*8-1)/6; i++) {
+                    int shifted=number<<i*6; //2^6=64
+                    arr_bytes+=GetBase64(shifted);
+                    if (shifted<64) break;
+                }
+                return arr_bytes;
+            }            
+        }
+
+        public static ItemTranslatingPattern GetOptimizedNameForPacker(List<(string, ItemTranslatingPattern)> list, string searchPatternName){
+            foreach ((string, ItemTranslatingPattern) patternPair in list){ 
+                if (searchPatternName==patternPair.Item1) { 
+                    return patternPair.Item2;
+                }
+            }
+            return null;
+        }
+        
+        static char GetBase64(int num){
+                switch (num){ 
+                    case 0: return 'A';
+                    case 1: return 'B';
+                    case 2: return 'C';
+                    case 3: return 'D';
+                    case 4: return 'E';
+                    case 5: return 'F';
+                    case 6: return 'G';
+                    case 7: return 'H';
+                    case 8: return 'I';
+                    case 9: return 'J';
+                    case 10: return 'K';
+                    case 11: return 'L';
+                    case 12: return 'M';
+                    case 13: return 'N';
+                    case 14: return 'O';
+                    case 15: return 'P';
+                    case 16: return 'Q';
+                    case 17: return 'R';
+                    case 18: return 'S';
+                    case 19: return 'T';
+                    case 20: return 'U';
+                    case 21: return 'V';
+                    case 22: return 'W';
+                    case 23: return 'X';
+                    case 24: return 'Y';
+                    case 25: return 'Z';
+                    case 26: return 'a';
+                    case 27: return 'b';
+                    case 28: return 'c';
+                    case 29: return 'd';
+                    case 30: return 'e';
+                    case 31: return 'f';
+                    case 32: return 'g';
+                    case 33: return 'h';
+                    case 34: return 'i';
+                    case 35: return 'j';
+                    case 36: return 'k';
+                    case 37: return 'l';
+                    case 38: return 'm';
+                    case 39: return 'n';
+                    case 40: return 'o';
+                    case 41: return 'p';
+                    case 42: return 'q';
+                    case 43: return 'r';
+                    case 44: return 's';
+                    case 45: return 't';
+                    case 46: return 'u';
+                    case 47: return 'v';
+                    case 48: return 'w';
+                    case 49: return 'x';
+                    case 50: return 'y';
+                    case 51: return 'z';
+                    case 52: return '0';
+                    case 53: return '1';
+                    case 54: return '2';
+                    case 55: return '3';
+                    case 56: return '4';
+                    case 57: return '5';
+                    case 58: return '6';
+                    case 59: return '7';
+                    case 60: return '8';
+                    case 61: return '9';
+                    case 62: return '+';
+                    case 63: return '/';
+                }
+
+                return '_';
+            }
     }
 }
