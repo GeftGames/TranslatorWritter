@@ -102,6 +102,7 @@
     <Compile Include="SimpleToWithPattern.Designer.cs">
       <DependentUpon>SimpleToWithPattern.cs</DependentUpon>
     </Compile>
+    <Compile Include="Source.cs" />
     <Compile Include="TranslatingItem.cs" />
     <EmbeddedResource Include="FormGetData.resx">
       <DependentUpon>FormGetData.cs</DependentUpon>

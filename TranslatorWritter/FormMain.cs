@@ -14237,6 +14237,10 @@ namespace TranslatorWritter {
                 AddNumber(ItemPatternNumber.Dve());
                 return;
             }
+            if (name=="sto") {
+                AddNumber(ItemPatternNumber.Sto());
+                return;
+            }
             DownloadDataCompletedEventHandler handler=null;
 
             try {
@@ -15505,7 +15509,7 @@ namespace TranslatorWritter {
         }
 
         private void button3_Click_1(object sender, EventArgs e) {
-            textBoxCite.Text+="\r\n"+ "kniha|primeni=|jmeno=|nazev=|misto=|vydavatel=|rok_vydani=|strany=|issn=|odkaz=|zpracovano=|shortcut=";
+            textBoxCite.Text+="\r\n"+ "kniha|prijmeni=|jmeno=|nazev=|misto=|vydavatel=|rok_vydani=|strany=|issn=|odkaz=|zpracovano=|shortcut=";
         }
 
         private void buttonCiteAddWeb_Click(object sender, EventArgs e) {            
@@ -16040,6 +16044,10 @@ namespace TranslatorWritter {
             if (name == null) return;
             if (name=="dvě" || name=="dva") {
                 AddNumber(ItemPatternNumber.Dve());
+                return;
+            }
+            if (name=="sto") {
+                AddNumber(ItemPatternNumber.Sto());
                 return;
             }
             DownloadDataCompletedEventHandler handler=null;

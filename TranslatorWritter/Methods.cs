@@ -212,6 +212,7 @@ namespace TranslatorWritter {
             }
             return false;
         }
+        
         public static bool ContainsBody(List<TranslatingToDataWithPattern> list, char[] chars) { 
             foreach (TranslatingToDataWithPattern data in list) { 
                 foreach (char ch in chars) {
@@ -319,33 +320,36 @@ namespace TranslatorWritter {
             }
         } 
 
-        public static List<(string, ItemTranslatingPattern)> OptimizeNamesToPacker(List<ItemTranslatingPattern> list){
-            List<(string, ItemTranslatingPattern)> arr=new System.Collections.Generic.List<(string, ItemTranslatingPattern)>();
+        public static List<PairTranslating> OptimizeNamesToPacker(List<ItemTranslatingPattern> list){
+            List<PairTranslating> arr=new System.Collections.Generic.List<PairTranslating>();
 
             for (int i=0; i<list.Count; i++){
                 ItemTranslatingPattern p = list[i];
                 string origName=p.Name;
                 string newOpName=NumbToBytes(i);
                 p.Name=newOpName;
-                arr.Add((origName, p));
+                arr.Add(new PairTranslating{NonSimplifiedName=origName, Pattern=p });
             }
             return arr;
 
             string NumbToBytes(int number) { 
+                const int bitMask = 0x3F;
                 string arr_bytes="";
-                for (int i=0; i<(4*8-1)/6; i++) {
-                    int shifted=number<<i*6; //2^6=64
+                for (int i=0; i<6; i++) {
+                    int shifted=(number>>(i*6)) & bitMask; //2^6=64
                     arr_bytes+=GetBase64(shifted);
-                    if (shifted<64) break;
+
+                    // not not zero
+                    if ((number >> ((i+1)*6)) == 0) break;
                 }
                 return arr_bytes;
-            }            
+            }
         }
 
-        public static ItemTranslatingPattern GetOptimizedNameForPacker(List<(string, ItemTranslatingPattern)> list, string searchPatternName){
-            foreach ((string, ItemTranslatingPattern) patternPair in list){ 
-                if (searchPatternName==patternPair.Item1) { 
-                    return patternPair.Item2;
+        public static ItemTranslatingPattern GetOptimizedNameForPacker(List<PairTranslating> list, string searchPatternName){
+            foreach (PairTranslating patternPair in list) {
+                if (searchPatternName==patternPair.NonSimplifiedName) {
+                    return patternPair.Pattern;
                 }
             }
             return null;
@@ -417,6 +421,7 @@ namespace TranslatorWritter {
                     case 61: return '9';
                     case 62: return '+';
                     case 63: return '/';
+                    //!#$%&()*,.:;<=>?@[]^_`{}~"'
                 }
 
                 return '_';

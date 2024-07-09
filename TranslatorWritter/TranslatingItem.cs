@@ -29,12 +29,16 @@ namespace TranslatorWritter {
             return data;
         }
         
-        public virtual string SavePacker() {
+        public virtual string SavePacker(List<Source> sources) {
             string data=From+"|"+PatternFrom;
             foreach (TranslatingToDataWithPattern to in To) {
-                if (!to.Body.Contains('?')) data+="|"+to.Save();
+                if (!to.Body.Contains('?')) data+="|"+to.SavePacker(sources);
             }
-            if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+           // if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+           // if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+            
+            while (data.EndsWith("|")) data = data.Substring(0, data.Length - 1);
+
             return data;
         }
 
@@ -360,12 +364,16 @@ namespace TranslatorWritter {
             foreach (TranslatingToData to in To) data+="|"+to.Save();
             return data;
         }
-        public virtual string SavePacker() {
+        public virtual string SavePacker(List<Source> sources) {
             string data=From;
             foreach (TranslatingToData to in To) {
-               if (!to.Text.Contains('?')) data+="|"+to.Save();
+               if (!to.Text.Contains('?')) data+="|"+to.SavePacker(sources);
             }
-            if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+         //   if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+           // if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+                       
+            while (data.EndsWith("|")) data = data.Substring(0, data.Length - 1);
+
             return data;
         }
 
@@ -405,7 +413,7 @@ namespace TranslatorWritter {
         public string From;
         public List<TranslatingToData> To;
         public bool Show=true;
-        public char[] notAllowedS=new char[]{' ', ' ', '|', '\t', ';', '_', '*', '/', '"'}, notAllowed=new char[]{'|', '\t', ';', '_', '*', '/', '"'};
+        public char[] notAllowedS=new char[]{/*' ', ' ',*/ '|', '\t', ';', '_', '*', '/', '"'}, notAllowed=new char[]{'|', '\t', ';', '_', '*', '/', '"'};
 
         public virtual string Save() {
             string data=From+"|"+ (Show ? "1" : "0");
@@ -414,12 +422,21 @@ namespace TranslatorWritter {
 
             return data;
         }
-        public virtual string SavePacker() {
+        public virtual string SavePacker(List<Source> cites) {
+            if (From=="") return null;
             string data=From+"|"+ (Show ? "1" : "0");
+            bool added=false;
             foreach (TranslatingToData to in To) {
-                if (to.Valid(notAllowedS)) data+="|"+to.Save();
+                if (to.Valid(notAllowedS)) {
+                    data+="|"+to.SavePacker(cites);
+                    added=true;
+                }
             }
-            if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+            if (!added) return null;
+           // if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+           // if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+            
+            while (data.EndsWith("|")) data = data.Substring(0, data.Length - 1);
             return data;
         }
 
@@ -556,7 +573,9 @@ namespace TranslatorWritter {
             if (!Valid()) return "⚠"+Name;
             return Name;
         }
-                
+
+        internal abstract bool IsSameAs(ItemTranslatingPattern pattern);
+        
         public abstract bool IsEmpty();
 
         internal string GetPrefix() { 
@@ -1332,6 +1351,14 @@ namespace TranslatorWritter {
             }
             return true;
         }
+
+        internal override bool IsSameAs(ItemTranslatingPattern pattern) {
+            ItemPatternNoun p=(ItemPatternNoun)pattern;
+            if (Gender!=p.Gender) return false;
+            for (int i=0; i<7*2; i++) if (Shapes[i]!=p.Shapes[i]) return false;
+
+            return true;
+        }
     }
 
     #region For SimpleUI
@@ -1355,11 +1382,21 @@ namespace TranslatorWritter {
                 Source.Replace(dataSeparator,'_');
         } 
         
-        public string SavePacker() { 
+        public string SavePacker(List<Source> sources) { 
+            string sourceNew="";
+            if (Source!="") {
+                foreach (Source s in sources) { 
+                    if (s.Shortcut==Source){ 
+                        sourceNew=s.ShortcutID; 
+                        break;
+                    }
+                }
+            }
+
             return Body.Replace(dataSeparator,'_')+dataSeparator+
                 Pattern.Replace(dataSeparator,'_')+dataSeparator+
                 Comment.Replace(dataSeparator,'_')+dataSeparator+
-                Source.Replace(dataSeparator,'_');
+                sourceNew/*Source.Replace(dataSeparator,'_')*/;
         }
 
         public void Load(string rawData) { 
@@ -1420,6 +1457,22 @@ namespace TranslatorWritter {
             return Text.Replace(dataSeparator,'_') + dataSeparator + 
                 Comment.Replace(dataSeparator,'_') + dataSeparator +
                 Source.Replace(dataSeparator,'_');
+        }
+
+        public string SavePacker(List<Source> sources) {
+            string sourceNew="";
+            if (Source!="") {
+                foreach (Source s in sources) { 
+                    if (s.Shortcut==Source){ 
+                        sourceNew=s.ShortcutID; 
+                        break;
+                    }
+                }
+            }
+
+            return Text.Replace(dataSeparator,'_') + dataSeparator + 
+                Comment.Replace(dataSeparator,'_') + dataSeparator +
+                sourceNew/*Source.Replace(dataSeparator,'_')*/;
         }
 
         public void Load(string rawData) { 
@@ -1619,19 +1672,54 @@ namespace TranslatorWritter {
             return data;
         }
 
-        public virtual new string SavePacker() {
+        public virtual new string SavePacker(List<Source> sources) {
             string data=From+"|"+PatternFrom+"|"+(int)wordUpperCaseType;
             foreach (TranslatingToDataWithPattern to in To) {
-                if (!to.Body.Contains('?') && !to.Body.Contains(' ')) data+="|"+to.Save();
+                if (!to.Body.Contains('?') && !to.Body.Contains(' ')) data+="|"+to.SavePacker(sources);
             }
-            if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+            //if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+            //if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+            while (data.EndsWith("|")) data = data.Substring(0, data.Length - 1);
             return data;
         }
     }
 
     class ItemPatternPronoun:ItemTranslatingPattern{
-     //   public GenderPronoun Gender;
         PronounType type;
+        public PronounType Type{
+            get{ return type; }
+            set{
+                if (type==value) return;
+                if (type==PronounType.Unknown) {
+                    if (value==PronounType.NoDeklination) Shapes=new string[1];
+                    else if (value==PronounType.DeklinationOnlySingle) Shapes=new string[7];
+                    else if (value==PronounType.Deklination) Shapes=new string[14];
+                    else if (value==PronounType.DeklinationWithGender) Shapes=new string[14*4];
+                    type = value;
+                    return;
+                }
+                string[] newArray=null;
+                if (value==PronounType.NoDeklination) {
+                    newArray=new string[1];
+                }
+                if (value==PronounType.DeklinationOnlySingle) {
+                    newArray=new string[7];
+                }
+                if (value==PronounType.Deklination) {
+                    newArray=new string[14];
+                }
+                if (value==PronounType.DeklinationWithGender) {
+                    newArray=new string[14*4];
+                }
+                for (int i=0; i<newArray.Length && i<Shapes.Length; i++) {
+                    newArray[i]=Shapes[i];
+                }
+                Shapes=newArray;
+                type = value;
+            }
+        }
+
+        public string[] Shapes;
   
         public static ItemPatternPronoun tENTO => new ItemPatternPronoun{
                 Name="tENTO",
@@ -1865,41 +1953,6 @@ namespace TranslatorWritter {
                     "ěmihle",
                 }
             };
-
-        public PronounType Type{
-            get{ return type; }
-            set{
-                if (type==value) return;
-                if (type==PronounType.Unknown) {
-                    if (value==PronounType.NoDeklination) Shapes=new string[1];
-                    else if (value==PronounType.DeklinationOnlySingle) Shapes=new string[7];
-                    else if (value==PronounType.Deklination) Shapes=new string[14];
-                    else if (value==PronounType.DeklinationWithGender) Shapes=new string[14*4];
-                    type = value;
-                    return;
-                }
-                string[] newArray=null;
-                if (value==PronounType.NoDeklination) {
-                    newArray=new string[1];
-                }
-                if (value==PronounType.DeklinationOnlySingle) {
-                    newArray=new string[7];
-                }
-                if (value==PronounType.Deklination) {
-                    newArray=new string[14];
-                }
-                if (value==PronounType.DeklinationWithGender) {
-                    newArray=new string[14*4];
-                }
-                for (int i=0; i<newArray.Length && i<Shapes.Length; i++) {
-                    newArray[i]=Shapes[i];
-                }
-                Shapes=newArray;
-                type = value;
-            }
-        }
-
-        public string[] Shapes;
 
         public ItemPatternPronoun() {
             Name="";
@@ -2230,6 +2283,15 @@ namespace TranslatorWritter {
             }
             return true;
         }
+        
+        internal override bool IsSameAs(ItemTranslatingPattern pattern) {
+            ItemPatternPronoun p=(ItemPatternPronoun)pattern;
+            if (type!=p.type) return false;
+            if (Shapes.Length!=p.Shapes.Length) return false;
+            for (int i=0; i<Shapes.Length; i++) if (Shapes[i]!=p.Shapes[i]) return false;
+
+            return true;
+        }
     }
 
     class ItemPronoun : ItemTranslatngWithPatterns{
@@ -2532,6 +2594,7 @@ namespace TranslatorWritter {
 
             return item;
         }
+        
         public ItemPatternAdjective Clone() {
             ItemPatternAdjective item = new ItemPatternAdjective {
                 Name = Name,
@@ -2798,6 +2861,16 @@ namespace TranslatorWritter {
             }
             return true;
         }
+
+        internal override bool IsSameAs(ItemTranslatingPattern pattern) {
+            ItemPatternAdjective p=(ItemPatternAdjective)pattern;
+            for (int i=0; i<7*2; i++) if (Middle[i]!=p.Middle[i]) return false;
+            for (int i=0; i<7*2; i++) if (Feminine[i]!=p.Feminine[i]) return false;
+            for (int i=0; i<7*2; i++) if (MasculineAnimate[i]!=p.MasculineAnimate[i]) return false;
+            for (int i=0; i<7*2; i++) if (MasculineInanimate[i]!=p.MasculineInanimate[i]) return false;
+
+            return true;
+        }
     }
 
     class ItemAdjective:ItemTranslatngWithPatterns{
@@ -2940,7 +3013,7 @@ namespace TranslatorWritter {
 
     class ItemNumber:ItemTranslatngWithPatterns{
         protected static readonly char[] notAllowedN=new char[]{' ', ' ', '|', '\t', ';', '/', '"'};
-        
+
         internal string GetText(List<ItemPatternNumber> pattersFrom, List<ItemPatternNumber> pattersTo) {
             if (string.IsNullOrEmpty(From)) {
                 if (string.IsNullOrEmpty(PatternFrom)) {
@@ -3052,6 +3125,28 @@ namespace TranslatorWritter {
 
     class ItemPatternNumber:ItemTranslatingPattern{
         NumberType type;
+        
+        public static ItemPatternNumber Sto() => new ItemPatternNumber{ 
+            Name="sTO",
+            Shapes=new string[14] { 
+                "to",
+                "ta",
+                "tu",
+                "to",
+                "to",
+                "tu",
+                "tem",
+
+                "ta,tě",
+                "et",
+                "ům",
+                "ta,tě",
+                "ta",
+                "tech",
+                "ty"      
+            },
+            type=NumberType.Deklination,
+        };
 
         public static ItemPatternNumber Dve() => new ItemPatternNumber{ 
             Name="dvA",
@@ -3363,6 +3458,14 @@ namespace TranslatorWritter {
             if (start.EndsWith(str)) { 
                 Name=start.Substring(0,start.Length-str.Length)+str.ToUpper()+end;
             }
+        }
+        
+        internal override bool IsSameAs(ItemTranslatingPattern pattern) {
+            ItemPatternNumber p=(ItemPatternNumber)pattern;
+            if (Shapes.Length!=p.Shapes.Length) return false;
+            for (int i=0; i<Shapes.Length; i++) if (Shapes[i]!=p.Shapes[i]) return false;
+
+            return true;
         }
     }
 
@@ -3717,7 +3820,11 @@ namespace TranslatorWritter {
             //data=data.Substring(0, data.Length-1);
             shapes=Methods.CompressPackerData(shapes);
 
-            return Name+"|"+(int)GetShowType()+"|"+(int)Type+"|"+string.Join("|",shapes);
+            string saveType;
+            if (Type==VerbType.Unknown) saveType="";
+            else saveType=((int)Type).ToString();
+
+            return Name+"|"+(int)GetShowType()+"|"+saveType+"|"+string.Join("|",shapes);
         }
 
         internal static ItemPatternVerb Load(string data) {
@@ -4154,6 +4261,36 @@ namespace TranslatorWritter {
 
             return true;
         }
+        
+        internal override bool IsSameAs(ItemTranslatingPattern pattern) {
+            ItemPatternVerb p=(ItemPatternVerb)pattern;
+
+            if (SContinous!=p.SContinous) return false;
+            if (SContinous) for (int i=0; i<Continous.Length; i++) if (Continous[i]!=p.Continous[i]) return false;
+            
+            if (SFuture!=p.SFuture) return false;
+            if (SFuture) for (int i=0; i<Future.Length; i++) if (Future[i]!=p.Future[i]) return false;
+
+            if (SPastActive!=p.SPastActive) return false;
+            if (SPastActive) for (int i=0; i<PastActive.Length; i++) if (PastActive[i]!=p.PastActive[i]) return false;
+
+            if (SPastPassive!=p.SPastPassive) return false;
+            if (SPastPassive) for (int i=0; i<PastPassive.Length; i++) if (PastPassive[i]!=p.PastPassive[i]) return false;
+
+            if (SImperative!=p.SImperative) return false;
+            if (SImperative) for (int i=0; i<Imperative.Length; i++) if (Imperative[i]!=p.Imperative[i]) return false;
+
+            if (STransgressiveCont!=p.STransgressiveCont) return false;
+            if (STransgressiveCont) for (int i=0; i<TransgressiveCont.Length; i++) if (TransgressiveCont[i]!=p.TransgressiveCont[i]) return false;
+            
+            if (STransgressivePast!=p.STransgressivePast) return false;
+            if (STransgressivePast) for (int i=0; i<TransgressivePast.Length; i++) if (TransgressivePast[i]!=p.TransgressivePast[i]) return false;
+
+            if (SAuxiliary!=p.SAuxiliary) return false;
+            if (SAuxiliary) for (int i=0; i<Auxiliary.Length; i++) if (Auxiliary[i]!=p.Auxiliary[i]) return false;
+
+            return true;
+        }
     }
 
     class ItemVerb: ItemTranslatngWithPatterns{
@@ -4220,18 +4357,22 @@ namespace TranslatorWritter {
         public new string Save() {
             string data=From+"|"+PatternFrom+"|";
             foreach (TranslatingToDataWithPattern d in To) { 
-                data+=d.Body+"|"+d.Pattern+"|"+d.Comment+"|";
+                data+=d.Body+"|"+d.Pattern+"|"+d.Comment+"|"+d.Source+"|";
             }
             return data.Substring(0, data.Length-1);
         } 
         
-        public new string SavePacker() {
+        public new string SavePacker(List<Source> sources) {
             string data=From+"|"+PatternFrom+"|";
             foreach (TranslatingToDataWithPattern d in To) { 
-                if (!d.Body.Contains(' ') && !d.Body.Contains('?') && !d.Body.Contains(' ')) data+=d.Body+"|"+d.Pattern+"|"+d.Comment+"|"+d.Source+"|";
+                if (!d.Body.Contains(' ') && !d.Body.Contains('?') && !d.Body.Contains(' ')) data+=d.SavePacker(sources)+"|";//d.Body+"|"+d.Pattern+"|"+d.Comment+"|"+d.Source+"|";
             }
-            if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
-            return data.Substring(0, data.Length-1);
+            //if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+            //if (data.EndsWith("|")) data=data.Substring(0, data.Length-1);
+
+            while (data.EndsWith("|")) data = data.Substring(0, data.Length - 1);
+
+            return data;//.Substring(0, data.Length-1);
         }
                 
         protected bool Valid(List<ItemPatternVerb> pattersFrom, List<ItemPatternVerb> pattersTo) {
@@ -4337,14 +4478,21 @@ namespace TranslatorWritter {
             return data;
         }
         
-        public new string SavePacker() {
+        public new string SavePacker(List<Source> sources) {
           //  if (From==To) return From+"|"+Fall+"|"+Comment;
             //return From+"|"+To+"|"+Fall+"|"+Comment;
+            if (To.Count==0) return null;
+            if (From=="") return null;
 
             string data=From+"|"+Fall;
             foreach (TranslatingToData to in To) {
-                if (!to.Text.Contains('?')) data+="|"+to.Save();
+                if (to.Text.Contains('?')) continue;
+                if (string.IsNullOrEmpty(to.Text)) continue;
+                
+                data+="|"+to.SavePacker(sources);
             }
+
+            while (data.EndsWith("|")) data = data.Substring(0, data.Length - 1);
             return data;
         }
 
