@@ -24,7 +24,7 @@ namespace TranslatorWritter {
         // Poslední verze projektu
         // ve 3 pole pro zdroje
         public const int CurrentVersion=3;
-
+        
         #region Lists
         List<ItemSimpleWord> itemsSimpleWords, itemsSimpleWordsFiltered;
         ItemSimpleWord CurrentSimpleWord;
@@ -13494,7 +13494,7 @@ namespace TranslatorWritter {
                                 for (int i=0; i<noun.To.Count; i++){
                                     TranslatingToDataWithPattern d = noun.To[i];
                                     if (d.Pattern== CurrentPatternNounTo.Name) {
-                                        noun.To[i] = new TranslatingToDataWithPattern{Body=d.Body, Pattern=edit.ReturnString};
+                                        noun.To[i].Pattern=edit.ReturnString;// = new TranslatingToDataWithPattern{Body=d.Body, Pattern=edit.ReturnString, Source=d.Source, Comment=d.Comment};
                                     }
                                 }
                             }
@@ -15522,6 +15522,15 @@ namespace TranslatorWritter {
 
         private void button4_Click(object sender, EventArgs e) {
             textBoxCite.Text+="\r\n"+ "cja|i=Čebín|strany=360-370|zpracovano=";
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            FormComboBox formComboBox=new FormComboBox(new string[]{"hanácké", "slovácké", "valašské", "charvátské", "lašské", "kopanické", "čuhácké", "malohanácké", "horská hanáčtina", "horácké"});
+            formComboBox.ShowDialog();
+            if (!string.IsNullOrEmpty(formComboBox.ReturnString)) { 
+                textBoxLang.Text=formComboBox.ReturnString;
+            }
         }
 
         void addFromToToolStripMenuItem1_Click(object sender, EventArgs e) {

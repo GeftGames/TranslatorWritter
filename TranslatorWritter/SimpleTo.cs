@@ -10,6 +10,9 @@ namespace TranslatorWritter {
         List<Label> ListLabelsSource=new List<Label>();
         List<TextBox> ListTextBoxsSource=new List<TextBox>();
 
+        List<Button> ListButtonUp=new List<Button>();
+        List<Button> ListButtonDown=new List<Button>();
+
         public SimpleTo() {
             InitializeComponent();
         }
@@ -22,7 +25,7 @@ namespace TranslatorWritter {
 
             // pole pro překlad
             TextBox textBoxNounTo = new TextBox {
-                Location = new System.Drawing.Point(41, 6 + posY),
+                Location = new System.Drawing.Point(41+14, 6 + posY),
                 Margin = new Padding(5, 6, 5, 6),
                 Size = new System.Drawing.Size(249, 23),
                 Anchor=anchorBasic,
@@ -32,7 +35,7 @@ namespace TranslatorWritter {
            // labelNounInputPatternTo
            Label labelNounInputPatternTo = new Label {
                AutoSize = true,
-               Location = new System.Drawing.Point(299, 9 + posY),
+               Location = new System.Drawing.Point(299+14, 9 + posY),
                Margin = new Padding(4, 0, 4, 0),
                Size = new System.Drawing.Size(37, 17),
                Anchor = anchorBasic,
@@ -41,7 +44,7 @@ namespace TranslatorWritter {
 
             // pole komentář
             TextBox textBoxComment = new TextBox {
-                Location = new System.Drawing.Point(394, 6 + posY),
+                Location = new System.Drawing.Point(394+14, 6 + posY),
                 Margin = new Padding(5, 6, 5, 6),
                 Size = new System.Drawing.Size(249, 23),
                 Anchor = anchorBasic,
@@ -52,7 +55,7 @@ namespace TranslatorWritter {
             // source label
             Label labelSource = new Label {
                AutoSize = true,
-               Location = new System.Drawing.Point(645, 9 + posY),
+               Location = new System.Drawing.Point(645+14, 9 + posY),
                Margin = new Padding(4, 0, 4, 0),
                Size = new System.Drawing.Size(37, 17),
                Anchor = anchorBasic,
@@ -61,7 +64,7 @@ namespace TranslatorWritter {
 
             // source textbox
             TextBox textBoxSource = new TextBox {
-                Location = new System.Drawing.Point(695, 6 + posY),
+                Location = new System.Drawing.Point(695+14, 6 + posY),
                 Margin = new Padding(5, 6, 5, 6),
                 Size = new System.Drawing.Size(100, 23),
                 Anchor = anchorBasic,
@@ -72,7 +75,7 @@ namespace TranslatorWritter {
 
             // Tlačítko smazat
             Button buttonRemove = new Button {
-                Location = new System.Drawing.Point(6, 5+posY),
+                Location = new System.Drawing.Point(6+15+5, 5+posY),
                 Name = "buttonRemove",
                 Size = new System.Drawing.Size(27, 26),
                 Anchor = anchorBasic,
@@ -80,9 +83,42 @@ namespace TranslatorWritter {
                 UseVisualStyleBackColor = true
             };
             buttonRemove.Click += (object sender, System.EventArgs e)=>{
-                Remove(GetIndexOfRow(textBoxNounTo));
+                var a=MessageBox.Show(text: "Vážně chcete smazat?", caption: "Smatat", buttons: MessageBoxButtons.YesNo);
+                if (a == DialogResult.Yes) Remove(GetIndexOfRow(textBoxNounTo));
+            };
+                        
+            // Tlařítko up
+            Button buttonUp = new Button {
+                Location = new System.Drawing.Point(0, 5+posY-5),
+                Name = "buttonUp",
+                Size = new System.Drawing.Size(20, 20),
+                Anchor = anchorBasic,
+                Text = "🠉",
+                Font = new System.Drawing.Font(Font.FontFamily, 8f),
+                UseVisualStyleBackColor = true,
+                TextAlign=System.Drawing.ContentAlignment.MiddleCenter,
+            };
+            buttonUp.Click += (object sender, System.EventArgs e) => {
+                MoveUp(GetIndexOfRow(textBoxNounTo));
+            };
+                        
+            // Tlařítko down
+            Button buttonDown = new Button {
+                Location = new System.Drawing.Point(0, 5+posY+16),
+                Name = "buttonDown",
+                Size = new System.Drawing.Size(20, 20),
+                Anchor = anchorBasic,
+                Text = "🠋",
+                Font = new System.Drawing.Font(Font.FontFamily, 8f),
+                UseVisualStyleBackColor = true,
+                TextAlign=System.Drawing.ContentAlignment.BottomCenter,
+            };
+            buttonDown.Click += (object sender, System.EventArgs e) => {
+                MoveDown(GetIndexOfRow(textBoxNounTo));
             };
 
+            ListButtonUp.Add(buttonUp);
+            ListButtonDown.Add(buttonDown);
             ListButtonRemove.Add(buttonRemove);
             ListTextBoxsBase.Add(textBoxNounTo);
             ListLabelsComment.Add(labelNounInputPatternTo);
@@ -90,6 +126,8 @@ namespace TranslatorWritter {
             ListLabelsSource.Add(labelSource);
             ListTextBoxsSource.Add(textBoxSource);
 
+            Controls.Add(buttonUp);
+            Controls.Add(buttonDown);
             Controls.Add(textBoxSource);
             Controls.Add(labelSource);
             Controls.Add(buttonRemove);
@@ -125,6 +163,21 @@ namespace TranslatorWritter {
             Controls.Remove(textBoxSource);
             ListTextBoxsSource.RemoveAt(indexOfRow);
             textBoxSource.Dispose();
+                        
+            Button buttonDown=ListButtonDown[indexOfRow];
+            Controls.Remove(buttonDown);
+            ListButtonDown.RemoveAt(indexOfRow);
+            buttonDown.Dispose();
+                        
+            Button buttonUp=ListButtonUp[indexOfRow];
+            Controls.Remove(buttonUp);
+            ListButtonUp.RemoveAt(indexOfRow);
+            buttonUp.Dispose();
+                        
+            Label source=ListLabelsSource[indexOfRow];
+            Controls.Remove(source);
+            ListLabelsSource.RemoveAt(indexOfRow);
+            source.Dispose();
 
             for (int i=0; i<ListTextBoxsBase.Count; i++) {
                 int posY=i*40+5+40;
@@ -133,6 +186,9 @@ namespace TranslatorWritter {
                 ListLabelsComment[i].Location=new System.Drawing.Point(ListLabelsComment[i].Location.X, posY);
                 ListTextBoxsComment[i].Location=new System.Drawing.Point(ListTextBoxsComment[i].Location.X, posY);
                 ListTextBoxsSource[i].Location=new System.Drawing.Point(ListTextBoxsSource[i].Location.X, posY);
+                ListButtonDown[i].Location=new System.Drawing.Point(ListButtonDown[i].Location.X, posY);
+                ListButtonUp[i].Location=new System.Drawing.Point(ListButtonUp[i].Location.X, posY);
+                ListLabelsSource[i].Location=new System.Drawing.Point(ListLabelsSource[i].Location.X, posY);
             }
         }
 
@@ -181,10 +237,106 @@ namespace TranslatorWritter {
             
             foreach (var i in ListLabelsSource) Controls.Remove(i);
             ListLabelsSource.Clear();
+                        
+            foreach (var i in ListButtonUp) Controls.Remove(i);
+            ListButtonUp.Clear();
+                        
+            foreach (var i in ListButtonDown) Controls.Remove(i);
+            ListButtonDown.Clear();
         }
 
         private void buttonAdd_Click(object sender, System.EventArgs e) {
             Add("","","");
+        }
+
+        void MoveUp(int indexOfRow) { 
+            if (indexOfRow>0) { 
+                int up=indexOfRow-1;
+                ChangePos(indexOfRow, up);
+                //// temp
+                //var BoxsBase = ListTextBoxsBase[indexOfRow];
+                //var BoxsBaseText = ListTextBoxsBase[indexOfRow];
+                //var ButtonRemove = ListButtonRemove[indexOfRow];
+                //var LabelsComment = ListLabelsComment[indexOfRow];
+                //var BoxsComment = ListTextBoxsComment[indexOfRow];
+                //var BoxsTextBoxsSource = ListTextBoxsSource[indexOfRow];
+                //var ButtonUp = ListButtonUp[indexOfRow];
+                //var buttonDown = ListButtonDown[indexOfRow];
+                //var source = ListLabelsSource[indexOfRow];
+
+                //// set current
+                //ListTextBoxsBase[indexOfRow] = ListTextBoxsBase[up];
+                //ListButtonRemove[indexOfRow] = ListButtonRemove[up];
+                //ListLabelsComment[indexOfRow] = ListLabelsComment[up];
+                //ListTextBoxsComment[indexOfRow] = ListTextBoxsComment[up];
+                //ListTextBoxsSource[indexOfRow] = ListTextBoxsSource[up];
+                //ListButtonDown[indexOfRow] = ListButtonDown[up];
+                //ListButtonUp[indexOfRow] = ListButtonUp[up];
+                //ListLabelsSource[indexOfRow] = ListLabelsSource[up];
+
+                //// set up
+                //ListTextBoxsBase[up] = BoxsBase;
+                //ListButtonRemove[up]=ButtonRemove;
+                //ListLabelsComment[up]=LabelsComment;
+                //ListTextBoxsComment[up]=BoxsComment;
+                //ListTextBoxsSource[up]=BoxsTextBoxsSource;
+                //ListButtonUp[up]=ButtonUp;
+                //ListButtonDown[up]=buttonDown;
+                //ListLabelsSource[up]=source;
+            }
+        }
+
+        void MoveDown(int indexOfRow) { 
+            if (indexOfRow+1<ListTextBoxsBase.Count) {
+                int down=indexOfRow+1;
+                ChangePos(indexOfRow, down);
+                //// temp
+                //var BoxsBase = ListTextBoxsBase[indexOfRow];
+                //var ButtonRemove = ListButtonRemove[indexOfRow];
+                //var LabelsComment = ListLabelsComment[indexOfRow];
+                //var BoxsComment = ListTextBoxsComment[indexOfRow];
+                //var BoxsTextBoxsSource = ListTextBoxsSource[indexOfRow];
+                //var ButtonUp = ListButtonUp[indexOfRow];
+                //var buttonDown = ListButtonDown[indexOfRow];
+                //var source = ListLabelsSource[indexOfRow];
+
+                //// set current
+                //ListTextBoxsBase[indexOfRow] = ListTextBoxsBase[down];
+                //ListButtonRemove[indexOfRow] = ListButtonRemove[down];
+                //ListLabelsComment[indexOfRow] = ListLabelsComment[down];
+                //ListTextBoxsComment[indexOfRow] = ListTextBoxsComment[down];
+                //ListTextBoxsSource[indexOfRow] = ListTextBoxsSource[down];
+                //ListButtonDown[indexOfRow] = ListButtonDown[down];
+                //ListButtonUp[indexOfRow] = ListButtonUp[down];
+                //ListLabelsSource[indexOfRow] = ListLabelsSource[down];
+
+                //// set up
+                //ListTextBoxsBase[down] = BoxsBase;
+                //ListButtonRemove[down]=ButtonRemove;
+                //ListLabelsComment[down]=LabelsComment;
+                //ListTextBoxsComment[down]=BoxsComment;
+                //ListTextBoxsSource[down]=BoxsTextBoxsSource;
+                //ListButtonUp[down]=ButtonUp;
+                //ListButtonDown[down]=buttonDown;
+                //ListLabelsSource[down]=source;
+            }
+        }
+
+        void ChangePos(int a, int b) { 
+            // temp
+            var BoxsBase = ListTextBoxsBase[a].Text;
+            var BoxsComment = ListTextBoxsComment[a].Text;
+            var BoxsTextBoxsSource = ListTextBoxsSource[a].Text;
+
+            // set current
+            ListTextBoxsBase[a].Text = ListTextBoxsBase[b].Text;
+            ListTextBoxsComment[a].Text = ListTextBoxsComment[b].Text;
+            ListTextBoxsSource[a].Text = ListTextBoxsSource[b].Text;
+
+            // set b
+            ListTextBoxsBase[b].Text = BoxsBase;
+            ListTextBoxsComment[b].Text=BoxsComment;
+            ListTextBoxsSource[b].Text=BoxsTextBoxsSource;
         }
     }
 }

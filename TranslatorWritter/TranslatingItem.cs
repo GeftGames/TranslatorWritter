@@ -1196,6 +1196,21 @@ namespace TranslatorWritter {
 
             return data+string.Join("|", shapesF);
         }
+   
+        public SavedPatternData SaveComprimeLang() {
+          //  string data=/*Name+'|'+*/;
+
+            List<string> shapesF=new List<string>(14);
+            for (int i=0; i<14; i++) {
+                string s = Shapes[i];
+                if (s.Contains("?")) shapesF.Add("?");
+                else shapesF.Add(Methods.SavePackerStringMultiple(s, notAllowedShapes));
+            }            
+
+            shapesF=Methods.CompressPackerData(shapesF);
+            
+            return new SavedPatternData{PatternName=Name, PatternData=((int)Gender)+"|"+string.Join("|", shapesF) };
+        }
 
         public static ItemPatternNoun Load(string data) {
             string[] raw=data.Split('|');
@@ -1980,6 +1995,16 @@ namespace TranslatorWritter {
             return Name+"|"+string.Join("|", shapes);
         }
 
+        public SavedPatternData SaveComprimeLang() {
+            List<string> shapes=new List<string>(Shapes.Length);
+            foreach (string s in Shapes) {
+                shapes.Add(Methods.SavePackerStringMultiple(s)); 
+            }
+            shapes=Methods.CompressPackerData(shapes);
+
+            return new SavedPatternData{PatternName=Name, PatternData=string.Join("|", shapes)};
+        }
+
         public ItemPatternPronoun Duplicate() {
             ItemPatternPronoun item = new ItemPatternPronoun {
                 Name = Name + "_dup",
@@ -2579,6 +2604,26 @@ namespace TranslatorWritter {
             shapes=Methods.CompressPackerData(shapes);
 
             return Name+"|"+(int)adjectiveType+"|"+string.Join("|", shapes);
+        }
+
+        public SavedPatternData SaveComprimeLang() {
+           List<string> shapes=new List<string>(18*4);
+            foreach (string s in Middle) {
+                shapes.Add(Methods.SavePackerStringMultiple(s)); 
+            }
+            foreach (string s in Feminine) {
+                shapes.Add(Methods.SavePackerStringMultiple(s)); 
+            }
+            foreach (string s in MasculineAnimate) {
+                shapes.Add(Methods.SavePackerStringMultiple(s)); 
+            }
+            foreach (string s in MasculineInanimate) {
+                shapes.Add(Methods.SavePackerStringMultiple(s)); 
+            }
+            
+            shapes=Methods.CompressPackerData(shapes);
+
+            return new SavedPatternData{PatternName=Name, PatternData=(int)adjectiveType+"|"+string.Join("|", shapes)};
         }
 
         public ItemPatternAdjective Duplicate(){
@@ -3280,6 +3325,20 @@ namespace TranslatorWritter {
             return Name+"|"+(int)ShowType+"|"+string.Join("|", shapes);
         }
 
+        public SavedPatternData SaveComprimeLang() {
+           // string data=Name+"|"+(int)ShowType+"|";
+            if (Shapes.Length==0) return null;
+
+            List<string> shapes=new List<string>(Shapes.Length);
+            foreach (string s in Shapes) {
+                shapes.Add(Methods.SavePackerStringMultiple(s)); 
+            }
+
+            shapes=Methods.CompressPackerData(shapes);
+
+            return new SavedPatternData{PatternName=Name, PatternData=(int)ShowType+"|"+string.Join("|", shapes)};
+        }
+
         public static ItemPatternNumber Load(string data) {
             string[] raw=data.Split('|');
             ItemPatternNumber item = new ItemPatternNumber {
@@ -3825,6 +3884,43 @@ namespace TranslatorWritter {
             else saveType=((int)Type).ToString();
 
             return Name+"|"+(int)GetShowType()+"|"+saveType+"|"+string.Join("|",shapes);
+        }
+
+        public SavedPatternData SaveComprimeLang() {           
+            List<string> shapes=new List<string>();
+            shapes.Add(Methods.SavePackerStringMultiple(Infinitive,notAllowedShapes));
+            if (SContinous) { 
+                foreach (string c in Continous) shapes.Add(Methods.SavePackerStringMultiple(c,notAllowedShapes));
+            }
+            if (SFuture) { 
+                foreach (string c in Future) shapes.Add(Methods.SavePackerStringMultiple(c,notAllowedShapes)); 
+            }
+            if (SImperative) { 
+                foreach (string c in Imperative) shapes.Add(Methods.SavePackerStringMultiple(c,notAllowedShapes)); 
+            }
+            if (SPastActive) { 
+                foreach (string c in PastActive) shapes.Add(Methods.SavePackerStringMultiple(c,notAllowedShapes)); 
+            }
+            if (SPastPassive) { 
+                foreach (string c in PastPassive) shapes.Add(Methods.SavePackerStringMultiple(c,notAllowedShapes)); 
+            }
+            if (STransgressiveCont) {
+                foreach (string c in TransgressiveCont) shapes.Add(Methods.SavePackerStringMultiple(c,notAllowedShapes)); 
+            }
+            if (STransgressivePast) { 
+                foreach (string c in TransgressivePast) shapes.Add(Methods.SavePackerStringMultiple(c,notAllowedShapes)); 
+            }
+            if (SAuxiliary) { 
+                foreach (string c in Auxiliary) shapes.Add(Methods.SavePackerStringMultiple(c,notAllowedShapes)); 
+            }
+         
+            shapes=Methods.CompressPackerData(shapes);
+
+            string saveType;
+            if (Type==VerbType.Unknown) saveType="";
+            else saveType=((int)Type).ToString();
+
+            return new SavedPatternData{PatternName=Name, PatternData=(int)GetShowType()+"|"+saveType+"|"+string.Join("|",shapes)};
         }
 
         internal static ItemPatternVerb Load(string data) {

@@ -880,6 +880,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage39 = new System.Windows.Forms.TabPage();
+            this.button5 = new System.Windows.Forms.Button();
             this.comboBoxCountry = new System.Windows.Forms.ComboBox();
             this.comboBoxTypeLang = new System.Windows.Forms.ComboBox();
             this.numericUpDownQuality = new System.Windows.Forms.NumericUpDown();
@@ -921,6 +922,7 @@
             this.textBoxComment = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tabPageCite = new System.Windows.Forms.TabPage();
+            this.button4 = new System.Windows.Forms.Button();
             this.buttonCiteAddAuto = new System.Windows.Forms.Button();
             this.buttonCiteAddWeb = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -1712,7 +1714,6 @@
             this.toolStripMenuItem158 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator65 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem159 = new System.Windows.Forms.ToolStripMenuItem();
-            this.button4 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerSimpleWord)).BeginInit();
             this.splitContainerSimpleWord.Panel1.SuspendLayout();
@@ -2242,7 +2243,7 @@
             this.textBoxInfo.Multiline = true;
             this.textBoxInfo.Name = "textBoxInfo";
             this.textBoxInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxInfo.Size = new System.Drawing.Size(1272, 904);
+            this.textBoxInfo.Size = new System.Drawing.Size(1272, 918);
             this.textBoxInfo.TabIndex = 3;
             this.textBoxInfo.TextChanged += new System.EventHandler(this.TextBoxInfo_TextChanged);
             // 
@@ -10156,18 +10157,18 @@
             this.toolStripSeparator5,
             this.zrušitToolStripMenuItem3});
             this.contextMenuStripPatternNounTo.Name = "contextMenuStripPatternNounTo";
-            this.contextMenuStripPatternNounTo.Size = new System.Drawing.Size(119, 104);
+            this.contextMenuStripPatternNounTo.Size = new System.Drawing.Size(181, 126);
             // 
             // addToolStripMenuItem3
             // 
             this.addToolStripMenuItem3.Name = "addToolStripMenuItem3";
-            this.addToolStripMenuItem3.Size = new System.Drawing.Size(118, 22);
+            this.addToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
             this.addToolStripMenuItem3.Text = "Add";
             // 
             // toolStripSeparator13
             // 
             this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size(115, 6);
+            this.toolStripSeparator13.Size = new System.Drawing.Size(177, 6);
             // 
             // selectedToolStripMenuItem3
             // 
@@ -10182,7 +10183,7 @@
             this.removeToolStripMenuItem3,
             this.clearToolStripMenuItem2});
             this.selectedToolStripMenuItem3.Name = "selectedToolStripMenuItem3";
-            this.selectedToolStripMenuItem3.Size = new System.Drawing.Size(118, 22);
+            this.selectedToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
             this.selectedToolStripMenuItem3.Text = "Selected";
             // 
             // renameWithBindsToolStripMenuItem
@@ -10248,7 +10249,7 @@
             this.abecedněToolStripMenuItem1,
             this.dleRoduToolStripMenuItem1});
             this.setříditToolStripMenuItem2.Name = "setříditToolStripMenuItem2";
-            this.setříditToolStripMenuItem2.Size = new System.Drawing.Size(118, 22);
+            this.setříditToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
             this.setříditToolStripMenuItem2.Text = "Sort";
             // 
             // abecedněToolStripMenuItem1
@@ -10268,12 +10269,12 @@
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(115, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // zrušitToolStripMenuItem3
             // 
             this.zrušitToolStripMenuItem3.Name = "zrušitToolStripMenuItem3";
-            this.zrušitToolStripMenuItem3.Size = new System.Drawing.Size(118, 22);
+            this.zrušitToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
             this.zrušitToolStripMenuItem3.Text = "Cancel";
             // 
             // contextMenuStripSimpleWord
@@ -10535,6 +10536,7 @@
             // 
             this.tabPage39.AutoScroll = true;
             this.tabPage39.AutoScrollMinSize = new System.Drawing.Size(0, 600);
+            this.tabPage39.Controls.Add(this.button5);
             this.tabPage39.Controls.Add(this.comboBoxCountry);
             this.tabPage39.Controls.Add(this.comboBoxTypeLang);
             this.tabPage39.Controls.Add(this.numericUpDownQuality);
@@ -10579,6 +10581,16 @@
             this.tabPage39.TabIndex = 0;
             this.tabPage39.Text = "Head";
             this.tabPage39.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(504, 57);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(26, 26);
+            this.button5.TabIndex = 12;
+            this.button5.Text = "...";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // comboBoxCountry
             // 
@@ -10969,7 +10981,7 @@
             this.textBoxComment.Multiline = true;
             this.textBoxComment.Name = "textBoxComment";
             this.textBoxComment.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxComment.Size = new System.Drawing.Size(1272, 835);
+            this.textBoxComment.Size = new System.Drawing.Size(1272, 849);
             this.textBoxComment.TabIndex = 3;
             this.textBoxComment.TextChanged += new System.EventHandler(this.TextBoxInfo_TextChanged);
             // 
@@ -10996,6 +11008,16 @@
             this.tabPageCite.TabIndex = 3;
             this.tabPageCite.Text = "Cite";
             this.tabPageCite.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(339, 6);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(105, 33);
+            this.button4.TabIndex = 9;
+            this.button4.Text = "Add cja";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // buttonCiteAddAuto
             // 
@@ -11037,7 +11059,7 @@
             this.textBoxCite.Multiline = true;
             this.textBoxCite.Name = "textBoxCite";
             this.textBoxCite.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxCite.Size = new System.Drawing.Size(1272, 740);
+            this.textBoxCite.Size = new System.Drawing.Size(1272, 754);
             this.textBoxCite.TabIndex = 4;
             // 
             // tabPage4
@@ -18169,16 +18191,6 @@
             this.toolStripMenuItem159.Size = new System.Drawing.Size(118, 22);
             this.toolStripMenuItem159.Text = "Cancel";
             // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(339, 6);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(105, 33);
-            this.button4.TabIndex = 9;
-            this.button4.Text = "Add cja";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -20239,6 +20251,7 @@
         private System.Windows.Forms.ComboBox comboBoxCountry;
         private System.Windows.Forms.Label label215;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
     }
 }
 
