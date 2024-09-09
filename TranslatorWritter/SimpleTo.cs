@@ -80,6 +80,7 @@ namespace TranslatorWritter {
                 Size = new System.Drawing.Size(27, 26),
                 Anchor = anchorBasic,
                 Text = "-",
+                TabStop=false,
                 UseVisualStyleBackColor = true
             };
             buttonRemove.Click += (object sender, System.EventArgs e)=>{
@@ -97,6 +98,7 @@ namespace TranslatorWritter {
                 Font = new System.Drawing.Font(Font.FontFamily, 8f),
                 UseVisualStyleBackColor = true,
                 TextAlign=System.Drawing.ContentAlignment.MiddleCenter,
+                TabStop = false
             };
             buttonUp.Click += (object sender, System.EventArgs e) => {
                 MoveUp(GetIndexOfRow(textBoxNounTo));
@@ -111,28 +113,29 @@ namespace TranslatorWritter {
                 Text = "🠋",
                 Font = new System.Drawing.Font(Font.FontFamily, 8f),
                 UseVisualStyleBackColor = true,
+                TabStop=false,
                 TextAlign=System.Drawing.ContentAlignment.BottomCenter,
             };
             buttonDown.Click += (object sender, System.EventArgs e) => {
                 MoveDown(GetIndexOfRow(textBoxNounTo));
             };
 
+            ListTextBoxsBase.Add(textBoxNounTo);
+            ListTextBoxsComment.Add(textBoxComment);
+            ListLabelsSource.Add(labelSource);
             ListButtonUp.Add(buttonUp);
             ListButtonDown.Add(buttonDown);
             ListButtonRemove.Add(buttonRemove);
-            ListTextBoxsBase.Add(textBoxNounTo);
             ListLabelsComment.Add(labelNounInputPatternTo);
-            ListTextBoxsComment.Add(textBoxComment);
-            ListLabelsSource.Add(labelSource);
             ListTextBoxsSource.Add(textBoxSource);
 
             Controls.Add(buttonUp);
             Controls.Add(buttonDown);
-            Controls.Add(textBoxSource);
-            Controls.Add(labelSource);
             Controls.Add(buttonRemove);
             Controls.Add(textBoxNounTo);
             Controls.Add(textBoxComment);
+            Controls.Add(textBoxSource);
+            Controls.Add(labelSource);
             Controls.Add(labelNounInputPatternTo);
         }
 

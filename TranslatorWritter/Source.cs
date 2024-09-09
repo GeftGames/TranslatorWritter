@@ -29,13 +29,10 @@ namespace TranslatorWritter{
                         list.Remove(rawVar);
                         Data=string.Join("|", list);
 
-                        //Data=rawData;
                         return true;
                     }  
                 }
-            }
-
-            if (typeSource=="web") {
+            }else if (typeSource=="web") {
                 foreach (string rawVar in vars) {
                     string[] parts=rawVar.Split('=');
                     if (parts[0]=="shortcut") {
@@ -50,9 +47,22 @@ namespace TranslatorWritter{
                         return true;
                     }  
                 }
-            }
+            } else if (typeSource=="periodikum") {
+                foreach (string rawVar in vars) {
+                    string[] parts=rawVar.Split('=');
+                    if (parts[0]=="shortcut") {
+                        if (parts[1]=="") return false;
+                        Shortcut=parts[1];
 
-            if (typeSource=="sncj") {
+                        var list=vars.ToList();
+                        list.Remove(rawVar);
+                        Data=string.Join("|", list);
+                        
+                        //Data=rawData;
+                        return true;
+                    }  
+                }
+            } else if (typeSource=="sncj") {
                 Shortcut="sncj"; 
                 Data=rawData;
                 return true;
@@ -69,7 +79,7 @@ namespace TranslatorWritter{
         }
 
         public static string SavePacker(List<Source> Sources) {
-            string cites="b";
+            string cites="";//"b";
             for (int i=0; i<Sources.Count; i++){
                 Source Source = Sources[i];
                 cites+=Source.Data;

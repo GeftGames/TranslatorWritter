@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using TranslatorWritter;
@@ -821,7 +822,8 @@ namespace TranslatorWritter{
                 ItemAdverb s = ItemAdverb.Load(line);
                 if (s==null) continue;
                 if (s.From=="") continue;
-                    
+                if (LangLocation=="Lichnov") 
+                    Debug.WriteLine(lines.Length);
                 itemsAdverb.Add(s);
             }
 

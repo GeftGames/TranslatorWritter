@@ -98,7 +98,8 @@ namespace TranslatorWritter {
                 Size = new System.Drawing.Size(27, 26),
                 Anchor = basicAnchor,
                 Text = "-",
-                UseVisualStyleBackColor = true
+                UseVisualStyleBackColor = true,
+                TabStop=false
             };
             buttonRemove.Click += (object sender, System.EventArgs e) => {
                 Remove(GetIndexOfRow(textBoxNounTo));
@@ -110,15 +111,18 @@ namespace TranslatorWritter {
             ListButtonRemove.Add(buttonRemove);
             ListSample.Add(labelNounInputPatternTo);
             ListTextBoxsComment.Add(textBoxComment);
+            
             ListTextBoxsSource.Add(textBoxSource);
             ListLabelsSource.Add(labelSource);
 
             Controls.Add(buttonRemove);
+            
             Controls.Add(textBoxNounTo);
+            Controls.Add(comboBoxNounInputPatternTo);
             Controls.Add(textBoxComment);
             Controls.Add(labelNounInputPatternTo);
             Controls.Add(labelNounShowTo);
-            Controls.Add(comboBoxNounInputPatternTo);
+            
             Controls.Add(labelSource);
             Controls.Add(textBoxSource);
         }

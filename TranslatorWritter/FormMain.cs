@@ -101,6 +101,7 @@ namespace TranslatorWritter {
         SimpleToWithPattern simpleUINouns, simpleUIAdjective, simpleUIPronouns, simpleUINumbers, simpleUIVerbs;
         SimpleTo simpleUISimpleWord, simpleUIPhrase, simpleUISentence, simpleUISentencePart, simpleUIAdverb, simpleUIPreposition, simpleUIConjuction, simpleUIParticle, simpleUIInterjection;
         bool uiLoaded=false;
+
         public FormMain(string[] args) {
             // Set items
             itemsSimpleWords = new List<ItemSimpleWord>();
@@ -543,6 +544,10 @@ namespace TranslatorWritter {
                         textBoxLocOriginal.Text = line.Substring(1);
                         break;
 
+                    case "n":
+                        comboBoxNarodnost.SelectedIndex = int.Parse(line.Substring(1));
+                        break;
+
                     case "#":
                         break;
                 }
@@ -841,6 +846,7 @@ namespace TranslatorWritter {
             if (!string.IsNullOrEmpty(textBoxLocOriginal.Text)) data += "r" + textBoxLocOriginal.Text + Environment.NewLine;
             data += "q" + numericUpDownQuality.Value + Environment.NewLine;
             if (!string.IsNullOrEmpty(textBoxOblast.Text)) data += "o" + textBoxOblast.Text + Environment.NewLine;
+            if (comboBoxNarodnost.SelectedIndex>=0) data += "n" + comboBoxNarodnost.SelectedIndex + Environment.NewLine;
             data += "-" + Environment.NewLine;
 
             //foreach (ItemSentencePattern sp in itemsSentencePatterns) {
@@ -15524,6 +15530,28 @@ namespace TranslatorWritter {
             textBoxCite.Text+="\r\n"+ "cja|i=Čebín|strany=360-370|zpracovano=";
         }
 
+        private void toolStripMenuItem29_Click(object sender, EventArgs e) {
+            doingJob = true;
+            SaveCurrentPreposition();
+            itemsPrepositions = itemsPrepositions.OrderBy(a => a.From).ToList();
+            PrepositionRefreshFilteredList();
+            SetListBoxPreposition();
+            doingJob = false;
+        }
+
+        private void toolStripMenuItem35_Click(object sender, EventArgs e) {
+            doingJob = true;
+            SaveCurrentConjunction();
+            itemsConjunctions = itemsConjunctions.OrderBy(a => a.From).ToList();
+            ConjunctionRefreshFilteredList();
+            SetListBoxConjunction();
+            doingJob = false;
+        }
+
+        private void button6_Click(object sender, EventArgs e) {
+             textBoxCite.Text+="\r\n"+ "periodikum|prijmeni=|jmeno=|prispevek=|periodikum=|podnazev=|rok=|misto=|vydavatel=|cislo=|rocnik=|strany=|odkaz=|zpracovano=|shortcut=";
+        }
+
         private void button5_Click(object sender, EventArgs e)
         {
             FormComboBox formComboBox=new FormComboBox(new string[]{"hanácké", "slovácké", "valašské", "charvátské", "lašské", "kopanické", "čuhácké", "malohanácké", "horská hanáčtina", "horácké"});
@@ -16616,7 +16644,7 @@ namespace TranslatorWritter {
             DialogResult dr =ofd.ShowDialog();
             if (dr==DialogResult.OK) {
                 SaveFileDialog sfd = new SaveFileDialog {
-                    Filter = "TranslatorWritter Archive|*.trw_a|All files|*.*"
+                    Filter = "TranslatorWritter Archive|*.trw_a|Json|*.json|All files|*.*"
                 };
                 DialogResult dr2 =sfd.ShowDialog();
                 if (dr2==DialogResult.OK) {
@@ -16628,18 +16656,15 @@ namespace TranslatorWritter {
                         fw.FormClosed += Fw_FormClosed;
                         fw.Show();
 
-                       // packer.Done += Packer_Done;
                         packer.ProgressChange += Packer_ProgressChange;
-
+                   
                         thread.Start();
 
                         void Packer_ProgressChange(object sender2, Packer.SampleEventArgs e2) {
                             fw.Invoke((MethodInvoker)delegate {
-                                 fw.Percentage=(int)(e2.Percentage*100);
-                                if (e2.Percentage==1) fw.Close();
+                                fw.Percentage=(int)(e2.Percentage*100);
+                                if (e2.Percentage>=1) fw.Close();
                             });
-
-
                         }
 
                         void Fw_FormClosed(object sender2, FormClosedEventArgs e2) {
@@ -16651,7 +16676,7 @@ namespace TranslatorWritter {
         }
 
         ///obsolete
-        void obaličkovatToolStripMenuItem_Click(object sender, EventArgs e) {
+      /*  void obaličkovatToolStripMenuItem_Click(object sender, EventArgs e) {
             OpenFileDialog ofd=new OpenFileDialog();
             ofd.Filter="TranslatorWritter Archive|*.trw_a|All files|*.*";
             DialogResult dr = ofd.ShowDialog();
@@ -16664,7 +16689,7 @@ namespace TranslatorWritter {
                     }
                 }
             }
-        }
+        }*/
 
         void buttonInfoText_Click(object sender, EventArgs e) {
             MessageBox.Show("Styly\r\n#... záhlaví kapitoly\r\n-...Odrážka\r\n\r\nUvést - doporučeno\r\n#Zdroje dat\r\nVýslovnost (symboly)");

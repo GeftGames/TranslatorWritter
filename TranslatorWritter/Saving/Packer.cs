@@ -48,7 +48,7 @@ namespace TranslatorWritter {
             StringBuilder sb=new StringBuilder();
             sb.Append(FormMain.NewestSaveVersion+'\n');
 
-            // same lines
+            // same lines comprime
             if (true) {
                 foreach (string s in OptimizeSameString(langs, "SimpleWord")) sb.Append(s+'\n');
                 sb.Append("-\n");
@@ -122,32 +122,44 @@ namespace TranslatorWritter {
                 foreach (string s in OptimizeSameString(langs, "Interjection")) sb.Append(s+'\n');
                 sb.Append("-\n");
             }
-
- 
+            
             // Zapsat soubor
             using (StreamWriter sw = new StreamWriter(outputFile)) {
+                if (outputFile.EndsWith(".json")) sw.Write("{\"data\": \"");
+                //head
+                if (outputFile.EndsWith(".json")) {
+                    sw.Write(System.Text.Json.JsonEncodedText.Encode(sb.ToString()));
+                } else sw.Write(sb);
+                sb.Clear();
+
                 foreach (ComprimeLang l in langs) {
                     List<string> lines=l.GetSavedLinesForPacker();
                     foreach (string s in lines) sb.Append(s+'\n');
-
-
+                    
                     currentFile++;
-                    // Report progress
                     float percentage = (float)currentFile / totalFiles;
+                        
+                    if (outputFile.EndsWith(".json")) {
+                        sw.Write(System.Text.Json.JsonEncodedText.Encode(delimiter.ToString()));
+                        sw.Write(System.Text.Json.JsonEncodedText.Encode(sb.ToString()));
+                        if (percentage==1 && outputFile.EndsWith(".json")) sw.Write("\"}");
+                    } else {
+                        sw.Write(delimiter);
+                        sw.Write(sb);
+                    }
+
+                    // Report progress
                     if (progress != null) {
                         progress.Report(percentage);
                     }
-                        
                     ProgressChange.Invoke(null, new SampleEventArgs(percentage));
-                    sw.Write(sb);
+
                     sb.Clear();
-                    sw.Write(delimiter);
-                }
+                }                
             }
 
             Debug.WriteLine("Done package");
            
-
             /*List<string> linesOfPackage=new List<string>();
 
             foreach (string filePath in filePaths) {    
@@ -1050,7 +1062,7 @@ namespace TranslatorWritter {
         ////    Done.Invoke(this, null);
         //}   
 
-        public static void ExtractMergedFiles(string inputFile, string outputFolder) {
+     /*   public static void ExtractMergedFiles(string inputFile, string outputFolder) {
             string fileContent = File.ReadAllText(inputFile);
             string[] fileContents = fileContent.Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -1064,7 +1076,7 @@ namespace TranslatorWritter {
                 // Zápis souboru
                 using (StreamWriter sw = new StreamWriter(filePath)) sw.Write(fileText);
             }
-        }
+        }*/
 
         void RelocateSame(List<PairTranslating> pairsNoun) {
             // From

@@ -882,6 +882,7 @@
             this.tabPage39 = new System.Windows.Forms.TabPage();
             this.button5 = new System.Windows.Forms.Button();
             this.comboBoxCountry = new System.Windows.Forms.ComboBox();
+            this.comboBoxNarodnost = new System.Windows.Forms.ComboBox();
             this.comboBoxTypeLang = new System.Windows.Forms.ComboBox();
             this.numericUpDownQuality = new System.Windows.Forms.NumericUpDown();
             this.label160 = new System.Windows.Forms.Label();
@@ -896,6 +897,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label166 = new System.Windows.Forms.Label();
             this.label163 = new System.Windows.Forms.Label();
+            this.label216 = new System.Windows.Forms.Label();
             this.label162 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxZachytne = new System.Windows.Forms.TextBox();
@@ -1714,6 +1716,7 @@
             this.toolStripMenuItem158 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator65 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem159 = new System.Windows.Forms.ToolStripMenuItem();
+            this.button6 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerSimpleWord)).BeginInit();
             this.splitContainerSimpleWord.Panel1.SuspendLayout();
@@ -2243,7 +2246,7 @@
             this.textBoxInfo.Multiline = true;
             this.textBoxInfo.Name = "textBoxInfo";
             this.textBoxInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxInfo.Size = new System.Drawing.Size(1272, 918);
+            this.textBoxInfo.Size = new System.Drawing.Size(1272, 946);
             this.textBoxInfo.TabIndex = 3;
             this.textBoxInfo.TextChanged += new System.EventHandler(this.TextBoxInfo_TextChanged);
             // 
@@ -10157,18 +10160,18 @@
             this.toolStripSeparator5,
             this.zrušitToolStripMenuItem3});
             this.contextMenuStripPatternNounTo.Name = "contextMenuStripPatternNounTo";
-            this.contextMenuStripPatternNounTo.Size = new System.Drawing.Size(181, 126);
+            this.contextMenuStripPatternNounTo.Size = new System.Drawing.Size(119, 104);
             // 
             // addToolStripMenuItem3
             // 
             this.addToolStripMenuItem3.Name = "addToolStripMenuItem3";
-            this.addToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.addToolStripMenuItem3.Size = new System.Drawing.Size(118, 22);
             this.addToolStripMenuItem3.Text = "Add";
             // 
             // toolStripSeparator13
             // 
             this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator13.Size = new System.Drawing.Size(115, 6);
             // 
             // selectedToolStripMenuItem3
             // 
@@ -10183,7 +10186,7 @@
             this.removeToolStripMenuItem3,
             this.clearToolStripMenuItem2});
             this.selectedToolStripMenuItem3.Name = "selectedToolStripMenuItem3";
-            this.selectedToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.selectedToolStripMenuItem3.Size = new System.Drawing.Size(118, 22);
             this.selectedToolStripMenuItem3.Text = "Selected";
             // 
             // renameWithBindsToolStripMenuItem
@@ -10249,7 +10252,7 @@
             this.abecedněToolStripMenuItem1,
             this.dleRoduToolStripMenuItem1});
             this.setříditToolStripMenuItem2.Name = "setříditToolStripMenuItem2";
-            this.setříditToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.setříditToolStripMenuItem2.Size = new System.Drawing.Size(118, 22);
             this.setříditToolStripMenuItem2.Text = "Sort";
             // 
             // abecedněToolStripMenuItem1
@@ -10269,12 +10272,12 @@
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(115, 6);
             // 
             // zrušitToolStripMenuItem3
             // 
             this.zrušitToolStripMenuItem3.Name = "zrušitToolStripMenuItem3";
-            this.zrušitToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.zrušitToolStripMenuItem3.Size = new System.Drawing.Size(118, 22);
             this.zrušitToolStripMenuItem3.Text = "Cancel";
             // 
             // contextMenuStripSimpleWord
@@ -10538,6 +10541,7 @@
             this.tabPage39.AutoScrollMinSize = new System.Drawing.Size(0, 600);
             this.tabPage39.Controls.Add(this.button5);
             this.tabPage39.Controls.Add(this.comboBoxCountry);
+            this.tabPage39.Controls.Add(this.comboBoxNarodnost);
             this.tabPage39.Controls.Add(this.comboBoxTypeLang);
             this.tabPage39.Controls.Add(this.numericUpDownQuality);
             this.tabPage39.Controls.Add(this.labelAuthor);
@@ -10553,6 +10557,7 @@
             this.tabPage39.Controls.Add(this.label2);
             this.tabPage39.Controls.Add(this.label166);
             this.tabPage39.Controls.Add(this.label163);
+            this.tabPage39.Controls.Add(this.label216);
             this.tabPage39.Controls.Add(this.label162);
             this.tabPage39.Controls.Add(this.label1);
             this.tabPage39.Controls.Add(this.textBoxZachytne);
@@ -10610,6 +10615,25 @@
             this.comboBoxCountry.Name = "comboBoxCountry";
             this.comboBoxCountry.Size = new System.Drawing.Size(187, 28);
             this.comboBoxCountry.TabIndex = 11;
+            // 
+            // comboBoxNarodnost
+            // 
+            this.comboBoxNarodnost.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxNarodnost.FormattingEnabled = true;
+            this.comboBoxNarodnost.Items.AddRange(new object[] {
+            "<neurčeno>",
+            "Hanáci",
+            "Laši",
+            "Valaši",
+            "Slováci",
+            "Horáci",
+            "Podhoráci",
+            "Němci",
+            "Češi"});
+            this.comboBoxNarodnost.Location = new System.Drawing.Point(159, 603);
+            this.comboBoxNarodnost.Name = "comboBoxNarodnost";
+            this.comboBoxNarodnost.Size = new System.Drawing.Size(187, 28);
+            this.comboBoxNarodnost.TabIndex = 10;
             // 
             // comboBoxTypeLang
             // 
@@ -10749,6 +10773,15 @@
             this.label163.Size = new System.Drawing.Size(55, 20);
             this.label163.TabIndex = 7;
             this.label163.Text = "Kvalita";
+            // 
+            // label216
+            // 
+            this.label216.AutoSize = true;
+            this.label216.Location = new System.Drawing.Point(25, 606);
+            this.label216.Name = "label216";
+            this.label216.Size = new System.Drawing.Size(83, 20);
+            this.label216.TabIndex = 7;
+            this.label216.Text = "Národnost";
             // 
             // label162
             // 
@@ -10981,7 +11014,7 @@
             this.textBoxComment.Multiline = true;
             this.textBoxComment.Name = "textBoxComment";
             this.textBoxComment.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxComment.Size = new System.Drawing.Size(1272, 849);
+            this.textBoxComment.Size = new System.Drawing.Size(1272, 670);
             this.textBoxComment.TabIndex = 3;
             this.textBoxComment.TextChanged += new System.EventHandler(this.TextBoxInfo_TextChanged);
             // 
@@ -10998,6 +11031,7 @@
             // 
             this.tabPageCite.Controls.Add(this.button4);
             this.tabPageCite.Controls.Add(this.buttonCiteAddAuto);
+            this.tabPageCite.Controls.Add(this.button6);
             this.tabPageCite.Controls.Add(this.buttonCiteAddWeb);
             this.tabPageCite.Controls.Add(this.button3);
             this.tabPageCite.Controls.Add(this.textBoxCite);
@@ -11011,21 +11045,21 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(339, 6);
+            this.button4.Location = new System.Drawing.Point(449, 6);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(105, 33);
             this.button4.TabIndex = 9;
-            this.button4.Text = "Add cja";
+            this.button4.Text = "cja";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // buttonCiteAddAuto
             // 
-            this.buttonCiteAddAuto.Location = new System.Drawing.Point(228, 6);
+            this.buttonCiteAddAuto.Location = new System.Drawing.Point(338, 6);
             this.buttonCiteAddAuto.Name = "buttonCiteAddAuto";
             this.buttonCiteAddAuto.Size = new System.Drawing.Size(105, 33);
             this.buttonCiteAddAuto.TabIndex = 9;
-            this.buttonCiteAddAuto.Text = "Add sncj";
+            this.buttonCiteAddAuto.Text = "sncj";
             this.buttonCiteAddAuto.UseVisualStyleBackColor = true;
             this.buttonCiteAddAuto.Click += new System.EventHandler(this.buttonCiteAddAuto_Click);
             // 
@@ -11035,7 +11069,7 @@
             this.buttonCiteAddWeb.Name = "buttonCiteAddWeb";
             this.buttonCiteAddWeb.Size = new System.Drawing.Size(105, 33);
             this.buttonCiteAddWeb.TabIndex = 9;
-            this.buttonCiteAddWeb.Text = "Add web";
+            this.buttonCiteAddWeb.Text = "web";
             this.buttonCiteAddWeb.UseVisualStyleBackColor = true;
             this.buttonCiteAddWeb.Click += new System.EventHandler(this.buttonCiteAddWeb_Click);
             // 
@@ -11045,7 +11079,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(105, 33);
             this.button3.TabIndex = 9;
-            this.button3.Text = "Add book";
+            this.button3.Text = "book";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click_1);
             // 
@@ -11054,12 +11088,12 @@
             this.textBoxCite.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxCite.Location = new System.Drawing.Point(3, 45);
+            this.textBoxCite.Location = new System.Drawing.Point(3, 47);
             this.textBoxCite.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBoxCite.Multiline = true;
             this.textBoxCite.Name = "textBoxCite";
             this.textBoxCite.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxCite.Size = new System.Drawing.Size(1272, 754);
+            this.textBoxCite.Size = new System.Drawing.Size(1272, 685);
             this.textBoxCite.TabIndex = 4;
             // 
             // tabPage4
@@ -16667,6 +16701,7 @@
             this.toolStripMenuItem29.Name = "toolStripMenuItem29";
             this.toolStripMenuItem29.Size = new System.Drawing.Size(97, 22);
             this.toolStripMenuItem29.Text = "ABC";
+            this.toolStripMenuItem29.Click += new System.EventHandler(this.toolStripMenuItem29_Click);
             // 
             // toolStripSeparator27
             // 
@@ -16730,6 +16765,7 @@
             this.toolStripMenuItem35.Name = "toolStripMenuItem35";
             this.toolStripMenuItem35.Size = new System.Drawing.Size(97, 22);
             this.toolStripMenuItem35.Text = "ABC";
+            this.toolStripMenuItem35.Click += new System.EventHandler(this.toolStripMenuItem35_Click);
             // 
             // toolStripSeparator29
             // 
@@ -18190,6 +18226,16 @@
             this.toolStripMenuItem159.Name = "toolStripMenuItem159";
             this.toolStripMenuItem159.Size = new System.Drawing.Size(118, 22);
             this.toolStripMenuItem159.Text = "Cancel";
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(228, 6);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(105, 33);
+            this.button6.TabIndex = 9;
+            this.button6.Text = "Periodikum";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // FormMain
             // 
@@ -20252,6 +20298,9 @@
         private System.Windows.Forms.Label label215;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Label label216;
+        private System.Windows.Forms.ComboBox comboBoxNarodnost;
+        private System.Windows.Forms.Button button6;
     }
 }
 
